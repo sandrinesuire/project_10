@@ -49,7 +49,6 @@ pip install -r requirements.txt
  
 Start the plateform application in development mode :
  * create database nutella on 127.0.0.1:5432 with "sandrine" user and "sandrine" password 
- * open console in nutella folder
 ```
 python manage.py migrate
 python manage.py runserve
