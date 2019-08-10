@@ -49,7 +49,7 @@ pip install -r requirements.txt
  
 Launch start file
 ```
-python start.py
+
 ```
 
 ## Platforms
