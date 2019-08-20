@@ -1,0 +1,25 @@
+.btn, #mainNav .navbar-brand, #mainNav .navbar-nav .nav-item .nav-link, body {
+    font-family: "Open Sans", sans-serif;
+    text-transform: none;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: "Scope One", sans-serif;
+    text-transform: none;
+}
+
+.bg-dark {
+    background-color: #C45525!important;
+  /*Rooibos chocolat  #C45525  196, 85, 37  $rooibos*/
+  /*Moules frites  #345A61  52, 90, 97  $moules*/
+  /*Bonbon rigolo  #86EBE6  134, 235, 230  $rigolo*/
+  /*Caramel mou  #DE9440  222, 148, 64  $caramel*/
+  /*Biscuit trempé  #E8A75D  232, 167, 93  $biscuit*/
+}
+
+.img-fluid {
+    max-width: 15%;
+    height: auto;
+}
+.btn-light{
+  color:rgba(255,255,255,.7);
+}
