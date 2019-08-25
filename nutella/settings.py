@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_extensions',
     'debug_toolbar',
     'substitute.apps.SubstituteConfig',
 ]
@@ -91,6 +92,7 @@ DATABASES = {
     }
 }
 
+LOGIN_URL = '/login/'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
