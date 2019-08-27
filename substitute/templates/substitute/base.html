@@ -24,7 +24,7 @@
   <link href="{% static 'substitute/vendor/magnific-popup/magnific-popup.css' %}" rel="stylesheet">
 
   <!-- Theme CSS - Includes Bootstrap -->
-  <link href="{% static 'substitute/css/creative.min.css' %}" rel="stylesheet">
+  <link href="{% static 'substitute/css/creative.css' %}" rel="stylesheet">
 
   <!-- Custom CSS -->
   <link href="{% static 'substitute/css/substitute.css' %}" rel="stylesheet">
@@ -60,6 +60,11 @@
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt fa-2x fa-fw" title="logout"></i></a>
             </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="{% url 'log_in' %}"><i class="fas fa-sign-in-alt fa-2x fa-fw" title="login"></i></a>
+            </li>
+
           {% endif %}
         </ul>
       </div>

@@ -1,4 +1,4 @@
-.btn, #mainNav .navbar-brand, #mainNav .navbar-nav .nav-item .nav-link, body {
+*, #mainNav .navbar-brand, input, button {
     font-family: "Open Sans", sans-serif;
     text-transform: none;
 }
