@@ -3,6 +3,7 @@ Views
 """
 
 from django import forms, shortcuts
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -39,6 +40,13 @@ def log_in(request):
             if user:  # Si l'objet renvoyé n'est pas None
                 login(request, user)  # nous connectons l'utilisateur
                 return shortcuts.redirect(redirect_to)
+            else:
+                messages.error(request, 'username or password not correct')
+                return redirect('log_in')
+        else:
+            messages.error(request, 'username or password not correct')
+            return redirect('log_in')
+
     return render(request, 'substitute/register.html', {'form': form,
                                                         'form_url': form_url,
                                                         'next': redirect_to})
@@ -51,11 +59,18 @@ def register(request, next='/'):
         username = form.cleaned_data["username"]
         email = form.cleaned_data["email"]
         password = form.cleaned_data["password"]
-        user = User.objects.create_user(username, email, password)
+        try:
+            user = User.objects.create_user(username, email, password)
+        except:
+            messages.error(request, 'Impossible to create user with these data')
+            return redirect('register')
         profil = Profil.objects.create(user=user)
         if profil:  # Si l'objet renvoyé n'est pas None
             login(request, user)  # nous connectons l'utilisateur
             return shortcuts.redirect(next)
+        else:
+            messages.error(request, 'Impossible to create user with these data')
+            return redirect('register')
     return render(request, 'substitute/register.html', {'form': form,
                                                         'form_url': form_url,
                                                         'next': '/'})
