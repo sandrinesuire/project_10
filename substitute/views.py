@@ -2,7 +2,7 @@
 Views
 """
 
-from django import forms, shortcuts
+from django import shortcuts
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -13,23 +13,22 @@ from django.contrib.auth import logout as _logout, authenticate, login
 from django.urls import reverse
 from django.utils import http
 
-from substitute.forms import UserForm, LoginForm
-from substitute.models import Profil
-
-
-class MyForm(forms.Form):  # Note that it is not inheriting from forms.ModelForm
-    chercher = forms.CharField(max_length=20)
-    # All my attributes here
+from substitute.forms import UserForm, LoginForm, SearchForm
+from substitute.models import Profile, Article
 
 
 def log_in(request):
+    """
+    Views for login
+    :param request:
+    :return:
+    """
     form = LoginForm(request.POST or None)
     form_url = "log_in"
     redirect_to = request.POST.get('next', request.GET.get('next', '/'))
     redirect_to = (redirect_to
                    if http.is_safe_url(redirect_to, request.get_host())
                    else '/')
-    print(redirect_to)
     if request.method == "POST":
         form = LoginForm(request.POST)
 
@@ -42,17 +41,24 @@ def log_in(request):
                 return shortcuts.redirect(redirect_to)
             else:
                 messages.error(request, 'username or password not correct')
-                return redirect('log_in')
+                return redirect(log_in)
         else:
-            messages.error(request, 'username or password not correct')
-            return redirect('log_in')
+            messages.error(request, 'formulaire invalid')
+            return redirect(log_in)
 
     return render(request, 'substitute/register.html', {'form': form,
                                                         'form_url': form_url,
-                                                        'next': redirect_to})
+                                                        'redirect_to': redirect_to})
 
 
-def register(request, next='/'):
+def register(request, redirect_to='/'):
+    """
+    View for registring a new account
+    :param request:
+    :param redirect_to: when anonymous user click on link (needed login), he is redirect to login, he could call the
+    registration url. Redirect_to memorise the link clicked at first by anonymous to redirect him at the good place
+    :return:
+    """
     form = UserForm(request.POST or None)
     form_url = "register"
     if form.is_valid():
@@ -63,38 +69,49 @@ def register(request, next='/'):
             user = User.objects.create_user(username, email, password)
         except:
             messages.error(request, 'Impossible to create user with these data')
-            return redirect('register')
-        profil = Profil.objects.create(user=user)
-        if profil:  # Si l'objet renvoyé n'est pas None
+            return redirect(register)
+        profile = Profile.objects.create(user=user)
+        if profile:  # Si l'objet renvoyé n'est pas None
             login(request, user)  # nous connectons l'utilisateur
-            return shortcuts.redirect(next)
+            return shortcuts.redirect(redirect_to)
         else:
             messages.error(request, 'Impossible to create user with these data')
-            return redirect('register')
+            return redirect(register)
     return render(request, 'substitute/register.html', {'form': form,
                                                         'form_url': form_url,
-                                                        'next': '/'})
+                                                        'redirect_to': '/'})
 
 
 def logout(request):
+    """
+    View for logout
+    :param request:
+    :return:
+    """
     _logout(request)
     return redirect(reverse(search))
 
 
 def search(request):
     """
-    Index view
+    View for searching a substitute
     :param request:
     :return: HttpResponse with message
     """
-    form = MyForm()
-    if request.method == 'POST':
-        print("sdvdv")
-        chercher = request.POST.get('chercher')
-        print(chercher)
+    form = SearchForm(request.POST or None)
+    if request.method == "POST":
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            chercher = form.cleaned_data["chercher"]
+            result = Article.objects.filter(product_name__contains=chercher)
+            if result.count() > 0:
+                article = result[0]
+                substitutes = article.get_article_substitutes_from_bd()
+                print(substitutes)
+                return render(request, 'substitute/results.html', {'article': article, 'substitutes': substitutes,
+                                                                   'backgrd': article.image_url})
 
-    template = loader.get_template('substitute/search.html')
-    return HttpResponse(template.render(request=request))
+    return render(request, 'substitute/search.html', {'form': form})
 
 
 @login_required
@@ -114,7 +131,6 @@ def legal(request):
     :return: HttpResponse with message
     """
     return render(request, 'substitute/legal.html')
-
 
 @login_required
 def mysubstitutes(request):

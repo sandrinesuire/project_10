@@ -1,0 +1,18 @@
+{% extends 'substitute/base.html' %}
+
+{% block content %}
+
+        <div class="align-self-end">
+          <h1 class="text-uppercase text-white font-weight-bold">{{ article.product_name }}</h1>
+          <hr class="divider my-4">
+        </div>
+
+{%  endblock %}
+
+{% block content1 %}
+    <ul>
+    {% for substitute in substitutes %}
+        <li>{{ substitute.product_name }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

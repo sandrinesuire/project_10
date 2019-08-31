@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^substitute/', include('substitute.urls')),
     url(r'^log_in/$', views.log_in, name='log_in'),
     url(r'^register/$', views.register, name='register'),
-    url(r'^register/(?P<next>[A-Za-z0-9_/]*)$', views.register, name='register'),
+    url(r'^register/(?P<redirect_to>[A-Za-z0-9_/]*)$', views.register, name='register'),
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^admin/', admin.site.urls),
 ]

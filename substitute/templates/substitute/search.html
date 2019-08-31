@@ -3,11 +3,7 @@
 {% load static %}
 
 {% block content %}
-
-  <!-- Masthead -->
-    <header class="masthead">
-    <div class="container h-100">
-      <div class="row h-100 align-items-center justify-content-center text-center">
+    <span class="vh-100 align-self-center ">
         <div class="align-self-end">
           <h1 class="text-uppercase text-white font-weight-bold">Du gras, oui, mais de qualité !</h1>
           <hr class="divider my-4">
@@ -16,15 +12,16 @@
           <h2 class="text-white-75 font-weight-light mb-5">Trouvez un produit de substitution pour ceux que vous consommez tous les jours.</h2>
         </div>
         <div class="align-self-baseline">
-          <form class="form-inline text-center my-2 my-lg-0">
-            <input class="form-control mr-0" type="text" placeholder="produit" aria-label="produit">
+          <form class="form-check-inline text-center my-2 my-lg-0" method="post" action="{% url 'search' %}">
+              {% csrf_token %}
+            <input class="form-control mr-0" type="text" name="chercher" value="" id="chercher" placeholder="rechercher" title="rechercher un substitue" aria-label="produit">
           <button class="form-control my-2 my-sm-0" type="submit">Chercher</button>
         </form>
         </div>
-      </div>
-    </div>
-  </header>
+    </span>
+{%  endblock %}
 
+{% block content1 %}
   <!-- Services Section -->
   <section class="page-section" id="about">
     <div class="container">
