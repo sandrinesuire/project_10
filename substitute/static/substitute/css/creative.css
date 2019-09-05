@@ -10669,7 +10669,7 @@ hr.light {
   }
 }
 
-header.masthead {
+header.masthead, header.masthead {
   padding-top: 10rem;
   padding-bottom: calc(10rem - 72px);
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(92, 77, 66, 0.8)), to(rgba(92, 77, 66, 0.8))), url("../img/bg-masthead.jpg");
@@ -10680,7 +10680,7 @@ header.masthead {
   background-size: cover;
 }
 
-header.masthead h1 {
+header.masthead h1, header.min_masthead h1 {
   font-size: 2.25rem;
 }
 
@@ -10691,16 +10691,20 @@ header.masthead h1 {
     padding-top: 72px;
     padding-bottom: 0;
   }
-  header.masthead p {
+  header.min_masthead {
+    padding-top: 72px;
+    padding-bottom: 0;
+  }
+  header.masthead p, header.masthead p {
     font-size: 1.15rem;
   }
-  header.masthead h1 {
+  header.masthead h1, header.masthead h1 {
     font-size: 3rem;
   }
 }
 
 @media (min-width: 1200px) {
-  header.masthead h1 {
+  header.masthead h1, header.masthead h1 {
     font-size: 3.5rem;
   }
 }

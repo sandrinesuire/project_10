@@ -1,0 +1,18 @@
+{% extends 'substitute/base/base.html' %}
+{% block page_content %}
+    <!-- Masthead -->
+    <header class="min_masthead" style="background:black;">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center justify-content-center text-center">
+                <img class="img-responsive" src="{{ backgrd }}" alt="background">
+                {% block masthead_content %}{% endblock %}
+          </div>
+        </div>
+    </header>
+
+
+  {% block content1 %}{% endblock %}
+
+
+{% endblock %}
+

@@ -35,7 +35,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
     <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="{% url 'search' %}"><img class="img-fluid"  src="{% static 'substitute/img/logo_pur_beurre29.png' %}" alt="PurBeurre"> Pur Beurre</a>
+      <a class="navbar-brand js-scroll-trigger" href="{% url 'search' %}"><img class="img-fluid" src="{% static 'substitute/img/logo_pur_beurre29.png' %}" alt="PurBeurre"> Pur Beurre</a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -72,20 +72,8 @@
     </div>
   </nav>
 
-    <!-- Masthead -->
-  {% if backgrd %}
-    <header class="masthead" style="background: -webkit-gradient(linear, left top, left bottom, from(rgba(92, 77, 66, 0.8)), to(rgba(92, 77, 66, 0.8))), url({{ backgrd }});background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url({{ backgrd }});padding-top: 10rem;padding-bottom: calc(10rem - 72px);background-position: center;background-repeat: no-repeat;background-attachment: scroll;">
-  {% else %}
-      <header class="masthead">
-  {% endif %}
-        <div class="container h-100">
-          <div class="row h-100 align-items-center justify-content-center text-center">
-              {% block content %}{% endblock %}
-          </div>
-        </div>
-    </header>
 
-{% block content1 %}{% endblock %}
+  {% block page_content %}{% endblock %}
 
   <!-- Footer -->
   <footer class="bg-light py-5">

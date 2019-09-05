@@ -158,7 +158,7 @@ class Article(models.Model):
 
     def get_article_substitutes_from_bd(self):
         """
-        Method returning a list of articles could substitute the self article from data_base
+        Method returning a list of articles could substitute the self searched_article from data_base
         :return: list of Article object
         """
         category = self.categories.all()[0]
@@ -169,7 +169,7 @@ class Article(models.Model):
 
     def get_substitute_from_api(self):
         """
-        Method returning the best substitutes Article object for article_id from api
+        Method returning the best substitutes Article object for searched_article_id from api
         :return: Article object
         """
         category = self.categories[0]
@@ -201,18 +201,18 @@ class Article(models.Model):
                     return None
 
     @staticmethod
-    def filter_substitutes_by_keyword_and_ingredients(article, substitutes):
+    def filter_substitutes_by_keyword_and_ingredients(searched_article, substitutes):
         """
         Method filtering the substitutes by keyword and ingredients
-        :param article: Article object
+        :param article: searched_article object
         :param substitutes: list of substitutes (Articles objects)
         :return:
         """
         # delete article chosen by user for not include itself in search
-        substitutes = [i for i in substitutes if i.code != article.code]
+        substitutes = [i for i in substitutes if i.code != searched_article.code]
         for substitute in substitutes:
             # count same keywords in field
-            keywords_number = sum(1 for x in article.keywords if x in substitute.keywords)
+            keywords_number = sum(1 for x in searched_article.keywords if x in substitute.keywords)
             substitute.keywords_number = keywords_number if keywords_number else 0
 
             # In order to sort the grade in the reverse order, I create my own reverse grade match
@@ -229,7 +229,7 @@ class Article(models.Model):
                 substitute.nutrition_grades) else 0
 
             # count same ingredients
-            ingredients_number = sum(1 for x in [v.lower() for d in article.ingredients for (k,v) in d.items()
+            ingredients_number = sum(1 for x in [v.lower() for d in searched_article.ingredients for (k,v) in d.items()
                                                  if k=="text"] if x in [v.lower() for d in substitute.ingredients for
                                                                         (k,v) in d.items() if k=="text"])
             substitute.ingredients_number = ingredients_number if ingredients_number else 0
@@ -292,7 +292,7 @@ class Article(models.Model):
         return article
 
 
-class Substitute(models.Model):
+class ProfileSubstitute(models.Model):
     """
     Class for substitute profile
     """
@@ -356,7 +356,7 @@ def get_api_article_substitutes(category_api='', search_terms='', bio=None):
     return articles
 
 
-def register_api_data_db(categories_nb=70, product_number_by_category=100, max_page_by_category=2000):
+def register_api_data_db(categories_nb=40, product_number_by_category=100, max_page_by_category=2000):
     """
     Method getting initial data from openfoodfacts api and storing them in database
     :return:

@@ -1,9 +1,9 @@
-{% extends 'substitute/base.html' %}
+{% extends 'substitute/base/full_base.html' %}
 
 {% load static %}
 
-{% block content %}
-    <span class="vh-100 align-self-center ">
+{% block masthead_content %}
+
         <div class="align-self-end">
           <h1 class="text-uppercase text-white font-weight-bold">Du gras, oui, mais de qualité !</h1>
           <hr class="divider my-4">
@@ -18,7 +18,7 @@
           <button class="form-control my-2 my-sm-0" type="submit">Chercher</button>
         </form>
         </div>
-    </span>
+
 {%  endblock %}
 
 {% block content1 %}

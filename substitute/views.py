@@ -105,13 +105,39 @@ def search(request):
             chercher = form.cleaned_data["chercher"]
             result = Article.objects.filter(product_name__contains=chercher)
             if result.count() > 0:
-                article = result[0]
-                substitutes = article.get_article_substitutes_from_bd()
-                print(substitutes)
-                return render(request, 'substitute/results.html', {'article': article, 'substitutes': substitutes,
-                                                                   'backgrd': article.image_url})
+                searched_article = result[0]
+                articles = searched_article.get_article_substitutes_from_bd()
+                print(articles)
+                # return only the first twelve articles
+                if len(articles) > 12:
+                    articles = articles[:12]
+                return render(request, 'substitute/results.html', {'searched_article': searched_article,
+                                                                   'articles': articles,
+                                                                   'backgrd': searched_article.image_url})
 
     return render(request, 'substitute/search.html', {'form': form})
+
+
+def detail(request, article_id):
+    """
+    view for display article détail
+    :param request:
+    :param article_id: the article id
+    :return:
+    """
+    article = Article.objects.get(pk=article_id)
+    context = {
+        'stores': article.stores,
+        'code': article.code,
+        'nutrition_grades': article.nutrition_grades,
+        'product_name': article.product_name,
+        'image_url': article.image_url,
+        'nutriments': article.nutriments,
+        'url': article.url,
+        'ingredients': article.ingredients,
+        'backgrd': article.image_url
+    }
+    return render(request, 'substitute/detail.html', context)
 
 
 @login_required

@@ -16,3 +16,22 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   /*Biscuit trempé  #E8A75D  232, 167, 93  $biscuit*/
 }
 
+
+
+.super_img {
+  position: relative;
+    height: auto;
+  z-index: 1;
+}
+img.article{
+    position: relative;
+
+    z-index: 20;
+}
+img.grade{
+    position: absolute;
+
+    top:-10px;
+    margin-left:-20px;
+    z-index: 30;
+}

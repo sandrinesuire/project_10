@@ -1,18 +1,47 @@
-{% extends 'substitute/base.html' %}
-
-{% block content %}
+{% extends 'substitute/base/min_list_base.html' %}
+{%  load static %}
+{% block masthead_content %}
 
         <div class="align-self-end">
-          <h1 class="text-uppercase text-white font-weight-bold">{{ article.product_name }}</h1>
+          <h1 class="text-uppercase text-white font-weight-bold">{{ searched_article.product_name }}</h1>
           <hr class="divider my-4">
         </div>
 
 {%  endblock %}
+{%  block title %}
 
-{% block content1 %}
-    <ul>
-    {% for substitute in substitutes %}
-        <li>{{ substitute.product_name }}</li>
-    {% endfor %}
-    </ul>
+        <div class="text-center">
+            <p><h3>Vous pouvez remplacer cet aliment par :</h3></p>
+        </div>
+
 {% endblock %}
+{% block content3 %}
+
+    {% if articles|length_is:"0" %}
+        <div class="text-center">
+          Aucuns articles ne peuvent substituer votre recherche, votre aliment est TOP!!!
+        </div>
+
+    {% else %}
+        {% for article in articles %}
+            <div class="col-lg-4 col-sm-6 text-center">
+              <a href="{% url 'detail' article_id=article.id %}">
+                  <div class="super_img" >
+                      <img class="img-fluid article" src="{{ article.image_url }}" alt="{{ article.product_name }}">
+                      {% if article.nutrition_grades %}
+                        <img class="img-fluid grade" src="{% static 'substitute/img/'|add:article.nutrition_grades|add:'.png' %}" alt={{ article.nutrition_grades }}>
+                      {% endif %}
+                  </div>
+
+                </a>
+                <p ></p>
+                <h3><a href="{% url 'detail' article_id=article.id %}">{{ article.product_name }}</a></h3>
+            </div>
+
+            {% if forloop.counter|divisibleby:3 %}<div class="clearfix"></div>{% endif %}
+        {% endfor %}
+
+    {% endif %}
+
+{% endblock %}
+
