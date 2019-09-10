@@ -150,8 +150,8 @@ def results(request):
             article = Article.objects.get(id=article_id)
             profile_substitute = ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
             context = _search(search)
-            message = 'Your substitute has been registred successfully!'
-            return render(request, 'substitute/results.html', context, message)
+            context["message"] = 'Your substitute has been registred successfully!'
+            return render(request, 'substitute/results.html', context)
 
 
 def detail(request, article_id):
