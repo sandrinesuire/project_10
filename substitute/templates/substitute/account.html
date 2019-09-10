@@ -1,11 +1,18 @@
 {% extends 'substitute/base/min_detail_base.html' %}
-
-{% load static %}
+{% load static  substitute_tags%}
 
 {% block masthead_content %}
-  <h1 class="text-uppercase text-white font-weight-bold">Du gras oui mais de qualité</h1>
-{% endblock %}
+
+        <div class="align-self-end">
+          <h1 class="text-uppercase text-white font-weight-bold m-4">{{ user.username }}</h1>
+          <hr class="divider my-4">
+        </div>
+
+{%  endblock %}
 
 {% block content3 %}
-  <h3>De la ratatouille aux croissants.</h3>
+    {{ user.email }}
+
+
 {% endblock %}
+

@@ -183,7 +183,8 @@ def account(request):
     :param request:
     :return: HttpResponse with message
     """
-    return render(request, 'substitute/account.html')
+    context = {'local_background': 'user'}
+    return render(request, 'substitute/account.html', context)
 
 
 def legal(request):
@@ -192,7 +193,8 @@ def legal(request):
     :param request:
     :return: HttpResponse with message
     """
-    return render(request, 'substitute/legal.html')
+
+    return render(request, 'substitute/legal.html', )
 
 @login_required
 def mysubstitutes(request):
@@ -201,4 +203,9 @@ def mysubstitutes(request):
     :param request:
     :return: HttpResponse with message
     """
-    return render(request, 'substitute/mysubstitutes.html')
+    substitutes = ProfileSubstitute.objects.filter(profile__user=request.user)
+    context = {
+        'local_background': 'mysubstitutes',
+        'substitutes': substitutes
+    }
+    return render(request, 'substitute/mysubstitutes.html', context)

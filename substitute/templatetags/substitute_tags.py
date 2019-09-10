@@ -11,3 +11,7 @@ def unregistred(article, user_id):
     if substitute.count():
         return False
     return True
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

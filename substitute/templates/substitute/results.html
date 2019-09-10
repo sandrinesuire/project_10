@@ -4,12 +4,12 @@
 {% block masthead_content %}
     <div class="align-self-end m-4">
         {% if searched_article is None %}
-            <h1 class="text-uppercase text-white font-weight-bold">Nous ne trouvons pas votre article
+            <h1 class="text-uppercase text-white font-weight-bold m-4">Nous ne trouvons pas votre article
                 : {{ search }}</h1>
             <hr class="divider my-4">
 
         {% else %}
-            <h1 class="text-uppercase text-white font-weight-bold">{{ searched_article.product_name }}</h1>
+            <h1 class="text-uppercase text-white font-weight-bold m-4">{{ searched_article.product_name }}</h1>
             <hr class="divider my-4">
         {% endif %}
     </div>

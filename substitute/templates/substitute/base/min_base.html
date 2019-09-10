@@ -1,10 +1,15 @@
 {% extends 'substitute/base/base.html' %}
+{% load static %}
 {% block page_content %}
     <!-- Masthead -->
-    <header class="min_masthead" style="background:black;">
+    <header class="min_masthead pb-4" style="background:black;">
         <div class="container h-100">
             <div class="row h-100 justify-content-center">
-                <img class="img-fluid" src="{{ backgrd }}" alt="background">
+                {% if local_background %}
+                    <img class="img-fluid"  src="{% static 'substitute/img/'|add:local_background|add:'.jpg' %}" alt="background">
+                {% else %}
+                    <img class="img-fluid" src="{{ backgrd }}" alt="background">
+                {% endif %}
                 {% block masthead_content %}{% endblock %}
           </div>
         </div>

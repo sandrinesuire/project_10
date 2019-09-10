@@ -56,8 +56,9 @@
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="{% url 'mysubstitutes' %}"><i class="fas fa-carrot fa-2x fa-fw" title="mon compte"></i></a>
           </li>
+
+
           {% if user.is_authenticated %}
-            <p>Welcome {{ user.username }} !!!</p>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt fa-2x fa-fw" title="logout"></i></a>
             </li>
@@ -65,8 +66,9 @@
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="{% url 'log_in' %}"><i class="fas fa-sign-in-alt fa-2x fa-fw" title="login"></i></a>
             </li>
-
           {% endif %}
+
+
         </ul>
       </div>
     </div>
