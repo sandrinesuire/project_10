@@ -13,8 +13,8 @@ from django.contrib.auth import logout as _logout, authenticate, login
 from django.urls import reverse
 from django.utils import http
 
-from substitute.forms import UserForm, LoginForm, SearchForm
-from substitute.models import Profile, Article
+from substitute.forms import UserForm, LoginForm, SearchForm, SubstituteRegisterForm
+from substitute.models import Profile, Article, ProfileSubstitute
 
 
 def log_in(request):
@@ -99,23 +99,59 @@ def search(request):
     :return: HttpResponse with message
     """
     form = SearchForm(request.POST or None)
-    if request.method == "POST":
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            chercher = form.cleaned_data["chercher"]
-            result = Article.objects.filter(product_name__contains=chercher)
-            if result.count() > 0:
-                searched_article = result[0]
-                articles = searched_article.get_article_substitutes_from_bd()
-                print(articles)
-                # return only the first twelve articles
-                if len(articles) > 12:
-                    articles = articles[:12]
-                return render(request, 'substitute/results.html', {'searched_article': searched_article,
-                                                                   'articles': articles,
-                                                                   'backgrd': searched_article.image_url})
+    if request.method == "POST" and form.is_valid():
+        search = form.cleaned_data["search"]
+        context = _search(search)
+        return render(request, 'substitute/results.html', context)
 
     return render(request, 'substitute/search.html', {'form': form})
+
+
+def _search(search):
+    """
+    Method private for searching article in database
+    :param search: the search name
+    :return: the context for search view
+    """
+    result = Article.objects.filter(product_name__contains=search)
+    if result.count() > 0:
+        searched_article = result[0]
+        backgrd = searched_article.image_url
+        articles = searched_article.get_article_substitutes_from_bd()
+        # return only the first twelve articles
+        if articles and len(articles) > 12:
+            articles = articles[:12]
+    else:
+        searched_article = None
+        articles = None
+        backgrd = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
+                  "twBvkuRWej2Up8zYxgFx-"
+    return {
+        'searched_article': searched_article,
+        'articles': articles,
+        'search': search,
+        'backgrd': backgrd
+    }
+
+
+def results(request):
+    """
+    View for results of search
+    :param request:
+    :return: HttpResponse with message
+    """
+    if request.method == "POST":
+        form = SubstituteRegisterForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data["user_id"]
+            search = form.cleaned_data["search"]
+            article_id = form.cleaned_data["article_id"]
+            profile = Profile.objects.get(user__id=user_id)
+            article = Article.objects.get(id=article_id)
+            profile_substitute = ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
+            context = _search(search)
+            message = 'Your substitute has been registred successfully!'
+            return render(request, 'substitute/results.html', context, message)
 
 
 def detail(request, article_id):

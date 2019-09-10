@@ -28,7 +28,7 @@
 
   <!-- Custom CSS -->
   <link href="{% static 'substitute/css/substitute.css' %}" rel="stylesheet">
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body id="page-top">
 
@@ -46,7 +46,7 @@
               {% csrf_token %}
               <div class="form-group">
                   {% csrf_token %}
-                <input type="text" name="chercher" value="" id="chercher" placeholder="rechercher" title="rechercher un substitue">
+                <input type="text" name="search" value="" id="search" placeholder="rechercher" title="rechercher un substitue">
               </div>
             </form>
           </li>
@@ -98,7 +98,6 @@
 
   <!-- Custom scripts for this template -->
   <script src="{% static 'substitute/js/creative.min.js' %}"></script>
-
 </body>
 
 </html>

@@ -248,7 +248,8 @@ class Article(models.Model):
         if new_substitutes:
             new_substitutes.sort(key=lambda x: [x.ingredients_number, x.keywords_number, x.my_grade],
                                  reverse=True)
-        return new_substitutes
+            return new_substitutes
+        return None
 
     @staticmethod
     def register_from_product(product):

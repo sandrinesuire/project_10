@@ -26,4 +26,13 @@ class SearchForm(forms.Form):
     """
     Search form
     """
-    chercher = forms.CharField(max_length=100)
+    search = forms.CharField(max_length=100)
+
+
+class SubstituteRegisterForm(forms.Form):
+    """
+    substitute register form
+    """
+    search = forms.CharField(max_length=100)
+    user_id = forms.IntegerField()
+    article_id = forms.IntegerField()

@@ -43,5 +43,5 @@ class SearchPageTestCase(TestCase):
         if article:
             print(article.product_name)
             response = self.client.post(reverse('search'), {
-                'chercher': article.product_name
+                'search': article.product_name
             })

@@ -1,47 +1,93 @@
 {% extends 'substitute/base/min_list_base.html' %}
-{%  load static %}
+{% load static substitute_tags %}
+
 {% block masthead_content %}
+    <div class="align-self-end m-4">
+        {% if searched_article is None %}
+            <h1 class="text-uppercase text-white font-weight-bold">Nous ne trouvons pas votre article
+                : {{ search }}</h1>
+            <hr class="divider my-4">
 
-        <div class="align-self-end">
-          <h1 class="text-uppercase text-white font-weight-bold">{{ searched_article.product_name }}</h1>
-          <hr class="divider my-4">
-        </div>
+        {% else %}
+            <h1 class="text-uppercase text-white font-weight-bold">{{ searched_article.product_name }}</h1>
+            <hr class="divider my-4">
+        {% endif %}
+    </div>
 
-{%  endblock %}
-{%  block title %}
-
+{% endblock %}
+{% block title %}
+    {% if articles %}
         <div class="text-center">
-            <p><h3>Vous pouvez remplacer cet aliment par :</h3></p>
+            <p>
+            <h1>Vous pouvez remplacer cet aliment par :</h1></p>
         </div>
+    {% else %}
+        <div class="text-center">
+            <p>
+            <h1>Aucun article ne peut substituer votre recherche.</h1></p>
+        </div>
+    {% endif %}
+
+    {# popup to inform substitute registration#}
+    {% if messages %}
+        <div class="container align-items-center">
+            <div class="toast" data-autohide="true" data-delay="3000">
+                <div class="toast-body alert-info">
+                    Votre substitut vient d'être sauvegardé
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            $('.toast').toast('show');
+        });
+    </script>
+
 
 {% endblock %}
 {% block content3 %}
 
-    {% if articles|length_is:"0" %}
-        <div class="text-center">
-          Aucuns articles ne peuvent substituer votre recherche, votre aliment est TOP!!!
-        </div>
-
+    {% if articles is None %}
     {% else %}
         {% for article in articles %}
-            <div class="col-lg-4 col-sm-6 text-center">
-              <a href="{% url 'detail' article_id=article.id %}">
-                  <div class="super_img" >
-                      <img class="img-fluid article" src="{{ article.image_url }}" alt="{{ article.product_name }}">
-                      {% if article.nutrition_grades %}
-                        <img class="img-fluid grade" src="{% static 'substitute/img/'|add:article.nutrition_grades|add:'.png' %}" alt={{ article.nutrition_grades }}>
-                      {% endif %}
-                  </div>
+            <div class="col-lg-4 col-sm-6 text-center border">
+                <a href="{% url 'detail' article_id=article.id %}">
+                    <div class="super_img">
+                        <img class="img-fluid article" src="{{ article.image_url }}" alt="{{ article.product_name }}">
+                        {% if article.nutrition_grades %}
+                            <img class="img-fluid grade"
+                                 src="{% static 'substitute/img/'|add:article.nutrition_grades|add:'.png' %}"
+                                 alt={{ article.nutrition_grades }}>
+                        {% endif %}
+                    </div>
 
                 </a>
-                <p ></p>
-                <h3><a href="{% url 'detail' article_id=article.id %}">{{ article.product_name }}</a></h3>
+                <p></p>
+                <h4><a href="{% url 'detail' article_id=article.id %}">{{ article.product_name }}</a></h4>
+
+                {% if article|unregistred:user.id %}
+                    <form class="form-check-inline text-center" method="post" action="{% url 'results' %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="hidden" name="user_id" value="{{ user.id }}"/>
+                        <input type="hidden" name="article_id" value="{{ article.id }}"/>
+                        <input type="hidden" name="search" value="{{ search }}"/>
+                        <button type="submit" class="fas fa-2x fa-save text-primary mb-4"> Sauvegarder</button>
+                    </form>
+                {% else %}
+                    <h5>Cet article a déjà été sauvegardé dans vos substituts.</h5>
+                {% endif %}
+
+
             </div>
 
-            {% if forloop.counter|divisibleby:3 %}<div class="clearfix"></div>{% endif %}
+            {% if forloop.counter|divisibleby:3 %}
+                <div class="clearfix"></div>{% endif %}
         {% endfor %}
 
     {% endif %}
 
 {% endblock %}
+
 
