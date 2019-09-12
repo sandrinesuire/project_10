@@ -10680,7 +10680,7 @@ header.masthead, header.masthead {
   background-size: cover;
 }
 
-header.masthead h1, header.min_masthead h1 {
+header.masthead h1 {
   font-size: 2.25rem;
 }
 

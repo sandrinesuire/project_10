@@ -114,23 +114,29 @@ def _search(search):
     :return: the context for search view
     """
     result = Article.objects.filter(product_name__contains=search)
+    content_title = "Nous ne trouvons pas votre article"
     if result.count() > 0:
         searched_article = result[0]
-        backgrd = searched_article.image_url
+        image_url = searched_article.image_url
         articles = searched_article.get_article_substitutes_from_bd()
         # return only the first twelve articles
         if articles and len(articles) > 12:
             articles = articles[:12]
+            content_title = "Vous pouvez remplacer cet aliment par : "
+        masthead_content = searched_article.product_name
     else:
         searched_article = None
         articles = None
-        backgrd = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
+        content_title = "Aucun article ne peut substituer  votre recherche. "
+        masthead_content = search
+        image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
                   "twBvkuRWej2Up8zYxgFx-"
     return {
         'searched_article': searched_article,
         'articles': articles,
-        'search': search,
-        'backgrd': backgrd
+        'masthead_content': masthead_content,
+        'image_url': image_url,
+        'content_title': content_title
     }
 
 
@@ -166,12 +172,12 @@ def detail(request, article_id):
         'stores': article.stores,
         'code': article.code,
         'nutrition_grades': article.nutrition_grades,
-        'product_name': article.product_name,
+        'masthead_content': article.product_name,
         'image_url': article.image_url,
         'nutriments': article.nutriments,
         'url': article.url,
         'ingredients': article.ingredients,
-        'backgrd': article.image_url
+        'content_title': "Voici la fiche déttaillée de votre produit"
     }
     return render(request, 'substitute/detail.html', context)
 
@@ -183,7 +189,10 @@ def account(request):
     :param request:
     :return: HttpResponse with message
     """
-    context = {'local_background': 'user'}
+    context = {'local_background': 'user',
+               'masthead_content': request.user.username,
+               'content_title': "Voici votre profile utilisateur :"
+               }
     return render(request, 'substitute/account.html', context)
 
 
@@ -193,7 +202,9 @@ def legal(request):
     :param request:
     :return: HttpResponse with message
     """
-
+    context = {
+        'masthead_content': "Acunes infos"
+    }
     return render(request, 'substitute/legal.html', )
 
 @login_required
@@ -204,8 +215,14 @@ def mysubstitutes(request):
     :return: HttpResponse with message
     """
     substitutes = ProfileSubstitute.objects.filter(profile__user=request.user)
+    if substitutes:
+        content_title = "Voici la liste de vos substitus :"
+    else:
+        content_title = ""
     context = {
         'local_background': 'mysubstitutes',
-        'substitutes': substitutes
+        'substitutes': substitutes,
+        'masthead_content': "Mes substituts",
+        'content_title': content_title
     }
     return render(request, 'substitute/mysubstitutes.html', context)

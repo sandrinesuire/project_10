@@ -1,43 +1,24 @@
-{% extends 'substitute/base/min_list_base.html' %}
+{% extends 'substitute/base/min_base.html' %}
 
-{% block masthead_content %}
+{% block content %}
+    <div class="row no-gutters">
+        {% if substitutes|length_is:"0" %}
+            <h5>Vous n'avez pas encore de substitut enregistré.</h5>
 
-        <div class="align-self-end">
-          <h1 class="text-uppercase text-white font-weight-bold m-4">Mes substituts</h1>
-          <hr class="divider my-4">
-        </div>
-{%  endblock %}
+        {% else %}
+            {% for substitute in substitutes %}
+                <div class="col-lg-4 col-sm-6 align-self-end border-rbl">
+                    <a href="{% url 'detail' article_id=substitute.article.id %}">
+                        <img class="img-responsive" src="{{ substitute.article.image_url }}"
+                             alt="{{ substitute.article.product_name }}">
+                        <h3>{{ substitute.article.product_name }}</h3></a>
+                </div>
 
+                {% if forloop.counter|divisibleby:3 %}
+                    <div class="clearfix"></div>{% endif %}
+            {% endfor %}
 
-{% block title %}
-    {% if substitutes %}
-        <div class="text-center">
-            <p>
-            <h1>Voici la liste de vos substitus :</h1></p>
-        </div>
-    {% endif %}
-
-{% endblock %}
-
-
-{% block content3 %}
-    {% if substitutes|length_is:"0" %}
-        <div class="text-center">
-          Vous n'avez pas encore de substitut enregistré.
-        </div>
-
-    {% else %}
-        {% for substitute in substitutes %}
-            <div class="col-lg-4 col-sm-6 text-center border">
-              <a href="{% url 'detail' article_id=substitute.article.id %}">
-                  <img class="img-responsive" src="{{ substitute.article.image_url }}" alt="{{ substitute.article.product_name }}">
-                <h3>{{ substitute.article.product_name }}</h3></a>
-            </div>
-
-            {% if forloop.counter|divisibleby:3 %}<div class="clearfix"></div>{% endif %}
-        {% endfor %}
-
-    {% endif %}
-
+        {% endif %}
+    </div>
 {% endblock %}
 

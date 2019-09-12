@@ -1,18 +1,7 @@
-{% extends 'substitute/base/min_detail_base.html' %}
-{% load static  substitute_tags%}
+{% extends 'substitute/base/min_base.html' %}
+{% load static  substitute_tags %}
 
-{% block masthead_content %}
-
-        <div class="align-self-end">
-          <h1 class="text-uppercase text-white font-weight-bold m-4">{{ user.username }}</h1>
-          <hr class="divider my-4">
-        </div>
-
-{%  endblock %}
-
-{% block content3 %}
-    {{ user.email }}
-
-
+{% block content %}
+    <h1><i class="fas fa-envelope fa-2x fa-fw" title="email"></i>{{ user.email }}</h1>
 {% endblock %}
 

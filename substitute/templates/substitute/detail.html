@@ -1,54 +1,78 @@
-{% extends 'substitute/base/min_detail_base.html' %}
-{% load static  substitute_tags%}
+{% extends 'substitute/base/min_base.html' %}
+{% load static  substitute_tags %}
 
-{% block masthead_content %}
-
-        <div class="align-self-end">
-          <h1 class="text-uppercase text-white font-weight-bold m-4">{{ product_name }}</h1>
-          <hr class="divider my-4">
-        </div>
-
-{%  endblock %}
-
-{% block content3 %}
+{% block content %}
     <a href="{{ url }}">Voir la fiche d'openfoodfact</a>
 
     <div class="container">
-      <div class="row">
+        <div class="row">
 
 
+            <div class="col-6">
+                <div class="mt-5">
+                    <h3 class="h4 mb-2">Nutriscore</h3>
+                    <img class="img-fluid" src="{% static 'substitute/img/'|add:nutrition_grades|add:'.png' %}"
+                         alt="Nutriscore">
+                </div>
+            </div>
 
-        <div class="col-6 text-center">
-          <div class="mt-5">
-              <h3 class="h4 mb-2">Nutriscore</h3>
-              <img class="img-fluid"  src="{% static 'substitute/img/'|add:nutrition_grades|add:'.png' %}" alt="Nutriscore">
-          </div>
+            <div class="col-6">
+                <div class="mt-5">
+                    <h3 class="h4 mb-2">Repères nutritionnels pour 100g</h3>
+                    <row>
+                        <table class="col-12 text-left">
+
+                            <tr>
+                                <td class="tb">Energie (kcal)</td>
+                                <td class="tb">{% widthratio nutriments|get_item:"energy_100g" 4.185 1 %}</td>
+                            </tr>
+                            <tr>
+                                <td class="tb">Matières grasses / Lipides</td>
+                                <td class="tb">{{ nutriments|get_item:"fat_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tbm">dont Acides gras saturés</td>
+                                <td class="tb">{{ nutriments|get_item:"saturated fat_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tb">Glucides</td>
+                                <td class="tb">{{ nutriments|get_item:"carbohydrates_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tbm">dont Sucres</td>
+                                <td class="tb">{{ nutriments|get_item:"sugars_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tb">Fibres alimentaires</td>
+                                <td class="tb">{{ nutriments|get_item:"fiber_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tb">Protéines</td>
+                                <td class="tb">{{ nutriments|get_item:"proteins_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tb">Sel</td>
+                                <td class="tb">{{ nutriments|get_item:"salt_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tbm">dont Sodium</td>
+                                <td class="tb">{{ nutriments|get_item:"sodium_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tb">Score nutritionnel - France</td>
+                                <td class="tb">{{ nutriments|get_item:"nutrition score-fr_100g" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="tbm">dont Nutri-Score</td>
+                                <td class="tb">{{ nutriments|get_item:"group_100g" }}</td>
+                            </tr>
+
+                        </table>
+                    </row>
+                </div>
+            </div>
+
         </div>
-
-        <div class="col-6 text-center">
-          <div class="mt-5">
-            <h3 class="h4 mb-2">Repères nutritionnels pour 100g</h3>
-              <row >
-                  <table class="col-12 text-left">
-
-                        <tr><td class="tb">Energie (kcal)</td><td class="tb">{% widthratio nutriments|get_item:"energy_100g" 4.185 1 %}</td></tr>
-                        <tr><td class="tb">Matières grasses / Lipides</td><td class="tb">{{ nutriments|get_item:"fat_100g" }}</td></tr>
-                        <tr><td class="tbm">dont Acides gras saturés</td><td class="tb">{{ nutriments|get_item:"saturated fat_100g" }}</td></tr>
-                        <tr><td class="tb">Glucides</td><td class="tb">{{ nutriments|get_item:"carbohydrates_100g" }}</td></tr>
-                        <tr><td class="tbm">dont Sucres</td><td class="tb">{{ nutriments|get_item:"sugars_100g" }}</td></tr>
-                        <tr><td class="tb">Fibres alimentaires</td><td class="tb">{{ nutriments|get_item:"fiber_100g" }}</td></tr>
-                        <tr><td class="tb">Protéines</td><td class="tb">{{ nutriments|get_item:"proteins_100g" }}</td></tr>
-                        <tr><td class="tb">Sel</td><td class="tb">{{ nutriments|get_item:"salt_100g" }}</td></tr>
-                        <tr><td class="tbm">dont Sodium</td><td class="tb">{{ nutriments|get_item:"sodium_100g" }}</td></tr>
-                        <tr><td class="tb">Score nutritionnel - France</td><td class="tb">{{ nutriments|get_item:"nutrition score-fr_100g" }}</td></tr>
-                        <tr><td class="tbm">dont Nutri-Score</td><td class="tb">{{ nutriments|get_item:"group_100g" }}</td></tr>
-
-                </table>
-              </row>
-          </div>
-        </div>
-
-      </div>
     </div>
 
 
