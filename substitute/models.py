@@ -234,8 +234,8 @@ class Article(models.Model):
                                                                         (k,v) in d.items() if k=="text"])
             substitute.ingredients_number = ingredients_number if ingredients_number else 0
 
-            # if substitute.ingredients_number == 0:
-            #     substitute.delete = "delete"
+            if substitute.ingredients_number == 0 or keywords_number == 0:
+                substitute.delete = "delete"
 
         # impossible to delete an instance when the iterator works on it without breaking the loop and skipping
         # instances, it is why I write the delete key for copy in an other array, only the necessary instances
@@ -357,7 +357,7 @@ def get_api_article_substitutes(category_api='', search_terms='', bio=None):
     return articles
 
 
-def register_api_data_db(categories_nb=40, product_number_by_category=100, max_page_by_category=2000):
+def register_api_data_db(categories_nb=40, product_number_by_category=100, max_page_by_category=500):
     """
     Method getting initial data from openfoodfacts api and storing them in database
     :return:
@@ -366,9 +366,25 @@ def register_api_data_db(categories_nb=40, product_number_by_category=100, max_p
     categories = utils.facets.get_categories()
 
     for category in categories[:categories_nb]:
-        id_api = category.get('id', None)
+        name = "Produits à tartiner"
+        if name:
+            Category.objects.get_or_create(name=name)
+            # some articles are not available, so count to force min 60 product available by category
+            # but break after 14 pages
+            page, count_product = 1, 0
+            while page < max_page_by_category:
+                products = openfoodfacts.products.get_by_category(name, page=page)
+                for product in products:
+                    if valid_product(product):
+                        article = Article.register_from_product(product)
+                        count_product = (count_product + 1) if article else count_product
+                page += 1
+                if count_product > product_number_by_category:
+                    break
+
+    for category in categories[:categories_nb]:
         name = category.get('name', None)
-        if id_api and name:
+        if name:
             Category.objects.get_or_create(name=name)
             # some articles are not available, so count to force min 60 product available by category
             # but break after 14 pages

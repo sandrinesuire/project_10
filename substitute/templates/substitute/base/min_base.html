@@ -9,9 +9,9 @@
                     {% if local_background %}
                         <img class="img-fluid" src="{% static 'substitute/img/'|add:local_background|add:'.jpg' %}"
                              alt="background">
-                    {% else %}
+                    {% elif image_url %}
                         <img class="img-fluid" src="{{ image_url }}" alt="background">
-                    {% endif %}
+                     {% endif %}
                     <h1 class="text-uppercase d-inline text-white font-weight-bold m-4">
                         {{ masthead_content }}
                     </h1>

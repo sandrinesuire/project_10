@@ -1,0 +1,7 @@
+{% extends 'substitute/base/min_base.html' %}
+{% load static  substitute_tags %}
+
+{% block content %}
+    <h1>Erreur 500.La requête à échouée.</h1>
+    <h2>Retour à la <a href="{% url 'search' %}">page d'accueil</a> pour lancer une nouvelle requête.</h2>
+{% endblock %}

@@ -5,6 +5,7 @@ Views
 from django import shortcuts
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
@@ -113,7 +114,16 @@ def _search(search):
     :param search: the search name
     :return: the context for search view
     """
-    result = Article.objects.filter(product_name__contains=search)
+    a = ' ' + search + ' '
+    b = ' ' + search
+    c = search + '.'
+    d = search + ' '
+    e = ' ' + search
+    f = search
+
+    result = Article.objects.filter(Q(product_name__contains=a) | Q(product_name__contains=b) |
+                                    Q(product_name__istartswith=c) | Q(product_name__istartswith=d) |
+                                    Q(product_name__iendswith=e) | Q(product_name__iendswith=f))
     content_title = "Nous ne trouvons pas votre article"
     if result.count() > 0:
         searched_article = result[0]
