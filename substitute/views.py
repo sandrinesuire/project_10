@@ -5,10 +5,9 @@ Views
 from django import shortcuts
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.db.models import Q
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.template import loader
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as _logout, authenticate, login
 from django.urls import reverse
@@ -68,7 +67,7 @@ def register(request, redirect_to='/'):
         password = form.cleaned_data["password"]
         try:
             user = User.objects.create_user(username, email, password)
-        except:
+        except IntegrityError:
             messages.error(request, 'Impossible to create user with these data')
             return redirect(register)
         profile = Profile.objects.create(user=user)
@@ -95,35 +94,36 @@ def logout(request):
 
 def search(request):
     """
-    View for searching a substitute
+    View for search a substitute
     :param request:
     :return: HttpResponse with message
     """
     form = SearchForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
-        search = form.cleaned_data["search"]
-        context = _search(search)
+        searching = form.cleaned_data["searching"]
+        context = _search(searching)
         return render(request, 'substitute/results.html', context)
 
     return render(request, 'substitute/search.html', {'form': form})
 
 
-def _search(search):
+def _search(searching):
     """
-    Method private for searching article in database
-    :param search: the search name
-    :return: the context for search view
+    Method private for search article in database
+    :param searching: the searching name
+    :return: the context for searching view
     """
-    a = ' ' + search + ' '
-    b = ' ' + search
-    c = search + '.'
-    d = search + ' '
-    e = ' ' + search
-    f = search
-
-    result = Article.objects.filter(Q(product_name__contains=a) | Q(product_name__contains=b) |
-                                    Q(product_name__istartswith=c) | Q(product_name__istartswith=d) |
-                                    Q(product_name__iendswith=e) | Q(product_name__iendswith=f))
+    first = searching
+    second = ' ' + searching + ' '
+    third = ' ' + searching
+    fourth = searching + '.'
+    fifth = searching + ' '
+    sixth = ' ' + searching
+    result = Article.objects.filter(product_name__iendswith=first)
+    if not result:
+        result = Article.objects.filter(Q(product_name__contains=second) | Q(product_name__contains=third) |
+                                        Q(product_name__istartswith=fourth) | Q(product_name__istartswith=fifth) |
+                                        Q(product_name__iendswith=sixth))
     content_title = "Aucun article ne peut substituer  votre recherche."
     if result.count() > 0:
         searched_article = result[0]
@@ -139,9 +139,9 @@ def _search(search):
         searched_article = None
         articles = None
         content_title = "Nous ne trouvons pas votre article"
-        masthead_content = search
+        masthead_content = searching
         image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
-                  "twBvkuRWej2Up8zYxgFx-"
+                    "twBvkuRWej2Up8zYxgFx-"
     return {
         'searched_article': searched_article,
         'articles': articles,
@@ -157,18 +157,19 @@ def results(request):
     :param request:
     :return: HttpResponse with message
     """
+    context = {}
     if request.method == "POST":
         form = SubstituteRegisterForm(request.POST)
         if form.is_valid():
             user_id = form.cleaned_data["user_id"]
-            search = form.cleaned_data["search"]
+            searching = form.cleaned_data["searching"]
             article_id = form.cleaned_data["article_id"]
-            profile = Profile.objects.get(user__id=user_id)
-            article = Article.objects.get(id=article_id)
-            profile_substitute = ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
-            context = _search(search)
+            profile = get_object_or_404(Profile, user__id=user_id)
+            article = get_object_or_404(Article, id=article_id)
+            ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
+            context = _search(searching)
             context["message"] = 'Your substitute has been registred successfully!'
-            return render(request, 'substitute/results.html', context)
+    return render(request, 'substitute/results.html', context)
 
 
 def detail(request, article_id):
@@ -178,7 +179,7 @@ def detail(request, article_id):
     :param article_id: the article id
     :return:
     """
-    article = Article.objects.get(pk=article_id)
+    article = get_object_or_404(Article, pk=article_id)
     context = {
         'stores': article.stores,
         'code': article.code,
@@ -213,10 +214,8 @@ def legal(request):
     :param request:
     :return: HttpResponse with message
     """
-    context = {
-        'masthead_content': "Acunes infos"
-    }
     return render(request, 'substitute/legal.html', )
+
 
 @login_required
 def mysubstitutes(request):

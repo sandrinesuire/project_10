@@ -4,12 +4,10 @@ Models file
 
 from django.contrib.auth.models import User
 from django.db import models
-# import ast
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 from openfoodfacts import openfoodfacts
 
-from nutella import settings
 from . import utils
 
 
@@ -41,7 +39,7 @@ class Category(models.Model):
     Class for category of article
     """
     name = models.CharField(
-        max_length=200,
+        max_length=600,
         help_text=_("The category name from openfoodfact api.")
     )
 
@@ -57,7 +55,7 @@ class Store(models.Model):
     Class for store
     """
     name = models.CharField(
-        max_length=200,
+        max_length=600,
         help_text=_("The store name from openfoodfact api.")
     )
 
@@ -95,7 +93,7 @@ class Article(models.Model):
         help_text=_("The nutrition grade of article from openfoodfact api.")
     )
     id_api = models.CharField(
-        max_length=400,
+        max_length=600,
         help_text=_("The store id from openfoodfact api.")
     )
     categories = models.ManyToManyField(
@@ -104,11 +102,11 @@ class Article(models.Model):
         help_text=_("the relation with category model")
     )
     product_name = models.CharField(
-        max_length=200,
+        max_length=600,
         help_text=_("The article name from openfoodfact api.")
     )
     image_url = models.URLField(
-        max_length=200,
+        max_length=600,
         null=True,
         help_text=_("The url article image from openfoodfact api.")
     )
@@ -118,7 +116,7 @@ class Article(models.Model):
         help_text=_("List of article nutriments from openfoodfact api.")
     )
     url = models.URLField(
-        max_length=200,
+        max_length=600,
         null=True,
         help_text=_("The url article from openfoodfact api.")
     )
@@ -204,7 +202,7 @@ class Article(models.Model):
     def filter_substitutes_by_keyword_and_ingredients(searched_article, substitutes):
         """
         Method filtering the substitutes by keyword and ingredients
-        :param article: searched_article object
+        :param searched_article: searched_article object
         :param substitutes: list of substitutes (Articles objects)
         :return:
         """
@@ -229,12 +227,18 @@ class Article(models.Model):
                 substitute.nutrition_grades) else 0
 
             # count same ingredients
-            ingredients_number = sum(1 for x in [v.lower() for d in searched_article.ingredients for (k,v) in d.items()
-                                                 if k=="text"] if x in [v.lower() for d in substitute.ingredients for
-                                                                        (k,v) in d.items() if k=="text"])
-            substitute.ingredients_number = ingredients_number if ingredients_number else 0
+            # try is necessary because product are not always composed with text info and rank info in ingredients field
+            try:
+                ingredients_number = sum(1 for x in
+                                         [v.lower() for d in searched_article.ingredients for (k, v) in d.items() if
+                                          k == "text" and d["rank"] < 5] if
+                                         x in [v.lower() for d in substitute.ingredients for (k, v) in d.items() if
+                                               k == "text"])
+            except KeyError:
+                ingredients_number = 0
+            substitute.ingredients_number = ingredients_number
 
-            if substitute.ingredients_number == 0 or keywords_number == 0:
+            if substitute.ingredients_number == 0 or substitute.keywords_number <= 3:
                 substitute.delete = "delete"
 
         # impossible to delete an instance when the iterator works on it without breaking the loop and skipping
@@ -284,10 +288,12 @@ class Article(models.Model):
         if stores:
             for name in stores.split(','):
                 article.stores.add(Store.objects.get_or_create(name=name)[0])
-        categories = product.get("categories", None)
-        if categories:
-            for name in categories.split(','):
-                article.categories.add(Category.objects.get_or_create(name=name)[0])
+        # categories aren't registred because heroku limit the number of row, and a product may have 10 categories,
+        # it is too much
+        # categories = product.get("categories", None)
+        # if categories:
+        #     for name in categories.split(','):
+        #         article.categories.add(Category.objects.get_or_create(name=name)[0])
         article.save()
 
         return article
@@ -357,7 +363,7 @@ def get_api_article_substitutes(category_api='', search_terms='', bio=None):
     return articles
 
 
-def register_api_data_db(categories_nb=40, product_number_by_category=100, max_page_by_category=500):
+def register_api_data_db(categories_nb=10, product_number_by_category=200, max_page_by_category=200):
     """
     Method getting initial data from openfoodfacts api and storing them in database
     :return:
@@ -366,26 +372,9 @@ def register_api_data_db(categories_nb=40, product_number_by_category=100, max_p
     categories = utils.facets.get_categories()
 
     for category in categories[:categories_nb]:
-        name = "Produits à tartiner"
-        if name:
-            Category.objects.get_or_create(name=name)
-            # some articles are not available, so count to force min 60 product available by category
-            # but break after 14 pages
-            page, count_product = 1, 0
-            while page < max_page_by_category:
-                products = openfoodfacts.products.get_by_category(name, page=page)
-                for product in products:
-                    if valid_product(product):
-                        article = Article.register_from_product(product)
-                        count_product = (count_product + 1) if article else count_product
-                page += 1
-                if count_product > product_number_by_category:
-                    break
-
-    for category in categories[:categories_nb]:
         name = category.get('name', None)
         if name:
-            Category.objects.get_or_create(name=name)
+            category = Category.objects.get_or_create(name=name)[0]
             # some articles are not available, so count to force min 60 product available by category
             # but break after 14 pages
             page, count_product = 1, 0
@@ -394,9 +383,12 @@ def register_api_data_db(categories_nb=40, product_number_by_category=100, max_p
                 for product in products:
                     if valid_product(product):
                         article = Article.register_from_product(product)
+                        article.categories.add(category)
                         count_product = (count_product + 1) if article else count_product
+                    if count_product >= product_number_by_category:
+                        break
                 page += 1
-                if count_product > product_number_by_category:
+                if count_product >= product_number_by_category:
                     break
 
 

@@ -54,6 +54,12 @@ python manage.py migrate
 python manage.py runserve
 ```
 
+## Test
+ 
+```
+python manage.py test
+```
+
 ## Platforms
 
 This application was testing on

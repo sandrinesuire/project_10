@@ -68,7 +68,5 @@ def add_by_facet_fetch_function(facet):
 
 # Build a fetch function for each facet.
 for facet in facets.facets:
-    """
-    """
     add_fetch_function(facet)
     add_by_facet_fetch_function(facet)

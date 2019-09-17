@@ -14,7 +14,7 @@
         <div class="align-self-baseline">
           <form class="form-check-inline text-center my-2 my-lg-0" method="post" action="{% url 'search' %}">
               {% csrf_token %}
-            <input class="form-control mr-0" type="text" name="search" value="" id="search" placeholder="rechercher" title="rechercher un substitue" aria-label="produit">
+            <input class="form-control mr-0" type="text" name="searching" value="" id="searching" placeholder="rechercher" title="rechercher un substitue" aria-label="produit">
           <button class="form-control my-2 my-sm-0" type="submit">Chercher</button>
         </form>
         </div>
