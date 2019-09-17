@@ -3,20 +3,21 @@
 {% block head_n_content %}
     <!-- Masthead -->
     <header class="min_masthead pb-4">
-        <div class="container h-100">
-            <div class="row h-100 justify-content-center">
-                <div class="align-self-end">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-sm-4 align-self-end">
                     {% if local_background %}
                         <img class="img-fluid" src="{% static 'substitute/img/'|add:local_background|add:'.jpg' %}"
                              alt="background">
                     {% elif image_url %}
                         <img class="img-fluid" src="{{ image_url }}" alt="background">
-                     {% endif %}
-                    <h1 class="text-uppercase d-inline text-white font-weight-bold m-4">
+                    {% endif %}
+                </div>
+                <div class="col-6 col-sm-8 text-center align-self-end">
+                    <h1 class="text-uppercase text-white font-weight-bold m-4">
                         {{ masthead_content }}
                     </h1>
                     <hr class="divider my-4">
-
                 </div>
             </div>
         </div>
@@ -31,7 +32,7 @@
     </section>
 
 
-    <section>
+    <section class="page-section">
         <div class="container-fluid text-center">
             {% block content %}{% endblock %}
         </div>

@@ -57,9 +57,25 @@ header.min_masthead {
   background-size: cover;
 }
 
+header.min_masthead h1 {
+  font-size: 2.25rem;
+}
+
 @media (min-width: 992px) {
   header.min_masthead {
-    height: auto;
-    min-height: auto;
+    padding-top: 72px;
+    padding-bottom: 0;
+  }
+  header.min_masthead p, header.min_masthead p {
+    font-size: 1.15rem;
+  }
+  header.min_masthead h1, header.min_masthead h1 {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  header.min_masthead h1, header.min_masthead h1 {
+    font-size: 3.5rem;
   }
 }

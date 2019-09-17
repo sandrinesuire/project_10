@@ -124,20 +124,21 @@ def _search(search):
     result = Article.objects.filter(Q(product_name__contains=a) | Q(product_name__contains=b) |
                                     Q(product_name__istartswith=c) | Q(product_name__istartswith=d) |
                                     Q(product_name__iendswith=e) | Q(product_name__iendswith=f))
-    content_title = "Nous ne trouvons pas votre article"
+    content_title = "Aucun article ne peut substituer  votre recherche."
     if result.count() > 0:
         searched_article = result[0]
         image_url = searched_article.image_url
         articles = searched_article.get_article_substitutes_from_bd()
         # return only the first twelve articles
-        if articles and len(articles) > 12:
-            articles = articles[:12]
+        if articles:
             content_title = "Vous pouvez remplacer cet aliment par : "
+            if len(articles) > 12:
+                articles = articles[:12]
         masthead_content = searched_article.product_name
     else:
         searched_article = None
         articles = None
-        content_title = "Aucun article ne peut substituer  votre recherche. "
+        content_title = "Nous ne trouvons pas votre article"
         masthead_content = search
         image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
                   "twBvkuRWej2Up8zYxgFx-"
