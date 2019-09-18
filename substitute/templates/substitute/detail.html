@@ -73,6 +73,16 @@
             </div>
 
         </div>
+        <div >
+            <hr>
+                Magasin susceptible de vendre ce produit :
+                {% for store in stores %}
+                    {{ store.name }},
+                {% endfor %}
+            <hr class="detail-separator">
+
+
+        </div>
     </div>
 
 

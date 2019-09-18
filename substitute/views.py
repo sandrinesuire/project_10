@@ -134,6 +134,8 @@ def _search(searching):
             content_title = "Vous pouvez remplacer cet aliment par : "
             if len(articles) > 12:
                 articles = articles[:12]
+            articles.sort(key=lambda x: [x.my_grade, x.ingredients_number, x.keywords_number],
+                          reverse=True)
         masthead_content = searched_article.product_name
     else:
         searched_article = None
@@ -181,15 +183,16 @@ def detail(request, article_id):
     """
     article = get_object_or_404(Article, pk=article_id)
     context = {
-        'stores': article.stores,
+        'stores': article.stores.all(),
         'code': article.code,
         'nutrition_grades': article.nutrition_grades,
         'masthead_content': article.product_name,
+        'searched_article': article,
         'image_url': article.image_url,
         'nutriments': article.nutriments,
         'url': article.url,
         'ingredients': article.ingredients,
-        'content_title': "Voici la fiche déttaillée de votre produit"
+        'content_title': "Voici la fiche détaillée de votre produit"
     }
     return render(request, 'substitute/detail.html', context)
 

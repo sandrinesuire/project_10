@@ -7,15 +7,19 @@
             <div class="row">
                 <div class="col-6 col-sm-4 align-self-end">
                     {% if local_background %}
+                        {#photo account ou mysubstituts#}
                         <img class="img-fluid" src="{% static 'substitute/img/'|add:local_background|add:'.jpg' %}"
                              alt="background">
                     {% elif image_url %}
-                        <img class="img-fluid" src="{{ image_url }}" alt="background">
+                        {#photo produits recherché#}
+                        <a href="{% url 'detail' article_id=searched_article.id %}">
+                            <img class="img-fluid" src="{{ image_url }}" alt="background">
+                        </a>
                     {% endif %}
                 </div>
                 <div class="col-6 col-sm-8 text-center align-self-end">
                     <h1 class="text-uppercase text-white font-weight-bold m-4">
-                        {{ masthead_content }}
+                        <a href="{% url 'detail' article_id=searched_article.id %}">{{ masthead_content }}</a>
                     </h1>
                     <hr class="divider my-4">
                 </div>
@@ -32,11 +36,9 @@
     </section>
 
 
-    <section class="page-section">
-        <div class="container-fluid text-center">
-            {% block content %}{% endblock %}
-        </div>
-    </section>
+
+
+
 
 
 

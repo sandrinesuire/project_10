@@ -78,7 +78,11 @@
   {% block head_n_content %}{% endblock %}
 
   <!-- Footer -->
-  <footer class="bg-light py-5">
+    <section class="page-section">
+        <div class="container-fluid text-center">
+            {% block content %}{% endblock %}
+        </div>
+ <footer class="bg-light py-5">
     <div class="container">
       <div class="row">
         <div class="col-6 small text-center text-muted"><a href="{% url 'legal' %}">Copyright &copy; 2019 - Start Bootstrap</a></div>
@@ -89,7 +93,7 @@
 
     </div>
   </footer>
-
+    </section>
   <!-- Bootstrap core JavaScript -->
   <script src="{% static 'substitute/vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'substitute/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
