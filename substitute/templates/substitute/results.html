@@ -18,16 +18,16 @@
         });
     </script>
 
-    <div class="row no-gutters">
+    <div class="row no-gutters mb-6">
         {% if articles is None %}
         {% else %}
             {% for article in articles %}
                 <div class="col-lg-4 col-sm-6 align-self-end border-rbl">
                     <a href="{% url 'detail' article_id=article.id %}">
                         <div class="super_img">
-                            <img class="img-fluid article" src="{{ article.image_url }}" alt="{{ article.product_name }}">
+                            <img class="img-responsive article" src="{{ article.image_url }}" alt="{{ article.product_name }}">
                             {% if article.nutrition_grades %}
-                                <img class="img-fluid grade"
+                                <img class="img-responsive grade"
                                      src="{% static 'substitute/img/'|add:article.nutrition_grades|add:'.png' %}"
                                      alt={{ article.nutrition_grades }}>
                             {% endif %}

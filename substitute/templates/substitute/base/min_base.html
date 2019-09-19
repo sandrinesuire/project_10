@@ -2,7 +2,7 @@
 {% load static %}
 {% block head_n_content %}
     <!-- Masthead -->
-    <header class="min_masthead pb-4">
+    <header class="min_masthead pb-2">
         <div class="container">
             <div class="row">
                 <div class="col-6 col-sm-4 align-self-end">
@@ -12,14 +12,22 @@
                              alt="background">
                     {% elif image_url %}
                         {#photo produits recherché#}
-                        <a href="{% url 'detail' article_id=searched_article.id %}">
+                        {% if searched_article %}
+                            <a href="{% url 'detail' article_id=searched_article.id %}">
+                                <img class="img-fluid" src="{{ image_url }}" alt="background">
+                            </a>
+                        {% else %}
                             <img class="img-fluid" src="{{ image_url }}" alt="background">
-                        </a>
+                        {% endif %}
                     {% endif %}
                 </div>
                 <div class="col-6 col-sm-8 text-center align-self-end">
                     <h1 class="text-uppercase text-white font-weight-bold m-4">
-                        <a href="{% url 'detail' article_id=searched_article.id %}">{{ masthead_content }}</a>
+                        {% if searched_article %}
+                            <a href="{% url 'detail' article_id=searched_article.id %}">{{ masthead_content }}</a>
+                        {% else %}
+                            {{ masthead_content }}
+                        {% endif %}
                     </h1>
                     <hr class="divider my-4">
                 </div>
@@ -27,20 +35,16 @@
         </div>
     </header>
 
-    <section>
-        <div class="container-fluid text-center">
-            <hr>
-            <h1>{{ content_title }}</h1>
-            <hr class="detail-separator">
-        </div>
-    </section>
 
+    <div class="container-fluid text-center">
+        <hr>
+        <h1 >{{ content_title }}</h1>
+        <hr class="detail-separator">
+    </div>
 
-
-
-
-
-
+    <div class="container-fluid text-center">
+        {% block content %}{% endblock %}
+   </div>
 
 {% endblock %}
 

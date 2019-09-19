@@ -194,7 +194,50 @@ def detail(request, article_id):
         'ingredients': article.ingredients,
         'content_title': "Voici la fiche détaillée de votre produit"
     }
+    if request.method == "POST":
+        form = SubstituteRegisterForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data["user_id"]
+            searching = ""
+            article_id = form.cleaned_data["article_id"]
+            profile = get_object_or_404(Profile, user__id=user_id)
+            article = get_object_or_404(Article, id=article_id)
+            ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
+            context["message"] = 'Your substitute has been registred successfully!'
     return render(request, 'substitute/detail.html', context)
+
+
+@login_required
+def register_substitut(request):
+    """
+    view for display article détail
+    :param request:
+    :param article_id: the article id
+    :return:
+    """
+    if request.method == "POST":
+        form = SubstituteRegisterForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data["user_id"]
+            article_id = form.cleaned_data["article_id"]
+            profile = get_object_or_404(Profile, user__id=user_id)
+            article = get_object_or_404(Article, id=article_id)
+            context = {
+                'stores': article.stores.all(),
+                'code': article.code,
+                'nutrition_grades': article.nutrition_grades,
+                'masthead_content': article.product_name,
+                'searched_article': article,
+                'image_url': article.image_url,
+                'nutriments': article.nutriments,
+                'url': article.url,
+                'ingredients': article.ingredients,
+                'content_title': "Voici la fiche détaillée de votre produit"
+            }
+            ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
+            context["message"] = 'Your substitute has been registred successfully!'
+            return render(request, 'substitute/detail.html', context)
+    return redirect(search)
 
 
 @login_required
@@ -217,7 +260,10 @@ def legal(request):
     :param request:
     :return: HttpResponse with message
     """
-    return render(request, 'substitute/legal.html', )
+    context = {
+        "content_title": "Légalité : "
+    }
+    return render(request, 'substitute/legal.html', context)
 
 
 @login_required
@@ -231,7 +277,7 @@ def mysubstitutes(request):
     if substitutes:
         content_title = "Voici la liste de vos substitus :"
     else:
-        content_title = ""
+        content_title = "Vous n'avez pas encore de substitut d'enregistré"
     context = {
         'local_background': 'mysubstitutes',
         'substitutes': substitutes,

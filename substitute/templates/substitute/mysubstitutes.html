@@ -2,23 +2,19 @@
 
 {% block content %}
     <div class="row no-gutters">
-        {% if substitutes|length_is:"0" %}
-            <h5>Vous n'avez pas encore de substitut enregistré.</h5>
 
-        {% else %}
-            {% for substitute in substitutes %}
-                <div class="col-lg-4 col-sm-6 align-self-end border-rbl">
-                    <a href="{% url 'detail' article_id=substitute.article.id %}">
-                        <img class="img-responsive" src="{{ substitute.article.image_url }}"
-                             alt="{{ substitute.article.product_name }}">
-                        <h3>{{ substitute.article.product_name }}</h3></a>
-                </div>
+        {% for substitute in substitutes %}
+            <div class="col-lg-4 col-sm-6 align-self-end border-rbl">
+                <a href="{% url 'detail' article_id=substitute.article.id %}">
+                    <img class="img-fluid" src="{{ substitute.article.image_url }}"
+                         alt="{{ substitute.article.product_name }}">
+                    <h3>{{ substitute.article.product_name }}</h3></a>
+            </div>
 
-                {% if forloop.counter|divisibleby:3 %}
-                    <div class="clearfix"></div>{% endif %}
-            {% endfor %}
+            {% if forloop.counter|divisibleby:3 %}
+                <div class="clearfix"></div>{% endif %}
+        {% endfor %}
 
-        {% endif %}
     </div>
 {% endblock %}
 
