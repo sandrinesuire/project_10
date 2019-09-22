@@ -22,7 +22,7 @@
 
                             <tr>
                                 <td class="tb">Energie (kcal)</td>
-                                <td class="tb">{% widthratio nutriments|default:""|get_item:"energy_100g" 4.185 1  %}</td>
+                                <td class="tb">{% widthratio nutriments|default:""|get_item:"energy_100g" 4.185 1 %}</td>
                             </tr>
                             <tr>
                                 <td class="tb">Matières grasses / Lipides</td>
@@ -71,7 +71,7 @@
             </div>
 
         </div>
-        <div >
+        <div>
             <hr>
                 Magasin susceptible de vendre ce produit :
                 {% for store in stores %}
@@ -83,19 +83,22 @@
         </div>
     </div>
 
-        <a href="{{ url }}">Voir la fiche d'openfoodfact   .</a>
+    <a href="{{ url }}">Voir la fiche d'openfoodfact .</a>
 
-    <form class="form-check-inline" method="post" action="{% url 'register_substitut' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="hidden" name="user_id" value="{{ user.id }}"/>
-        <input type="hidden" name="searching" value="a"/>
-        <input type="hidden" name="article_id" value="{{ searched_article.id }}"/>
-        <button type="submit" class="fas fa-2x fa-save text-primary mb-4"> Sauvegarder</button>
-    </form>
+    {% if searched_article|unregistred:user.id %}
+        <form class="form-check-inline" method="post" action="{% url 'register_substitut' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="come_from" value="detail"/>
+            <input type="hidden" name="user_id" value="{{ user.id }}"/>
+            <input type="hidden" name="article_id" value="{{ searched_article.id }}"/>
+            <input type="hidden" name="searching" value="a"/>
+            <button type="submit" class="fas fa-2x fa-save text-primary mb-4"> Sauvegarder</button>
+        </form>
 
-
-
+    {% else %}
+        <h5>Cet article a déjà été sauvegardé dans vos substituts.</h5>
+    {% endif %}
 
 {% endblock %}
 

@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as _logout, authenticate, login
@@ -159,19 +160,20 @@ def results(request):
     :param request:
     :return: HttpResponse with message
     """
-    context = {}
-    if request.method == "POST":
-        form = SubstituteRegisterForm(request.POST)
-        if form.is_valid():
-            user_id = form.cleaned_data["user_id"]
-            searching = form.cleaned_data["searching"]
-            article_id = form.cleaned_data["article_id"]
-            profile = get_object_or_404(Profile, user__id=user_id)
-            article = get_object_or_404(Article, id=article_id)
-            ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
-            context = _search(searching)
-            context["message"] = 'Your substitute has been registred successfully!'
-    return render(request, 'substitute/results.html', context)
+    pass
+    # context = {}
+    # if request.method == "POST":
+    #     form = SubstituteRegisterForm(request.POST)
+    #     if form.is_valid():
+    #         user_id = form.cleaned_data["user_id"]
+    #         searching = form.cleaned_data["searching"]
+    #         article_id = form.cleaned_data["article_id"]
+    #         profile = get_object_or_404(Profile, user__id=user_id)
+    #         article = get_object_or_404(Article, id=article_id)
+    #         ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
+    #         context = _search(searching)
+    #         context["message"] = 'Your substitute has been registred successfully!'
+    # return render(request, 'substitute/results.html', context)
 
 
 def detail(request, article_id):
@@ -216,25 +218,39 @@ def register_substitut(request):
     if request.method == "POST":
         form = SubstituteRegisterForm(request.POST)
         if form.is_valid():
+            come_from = form.cleaned_data["come_from"]
             user_id = form.cleaned_data["user_id"]
+            searching = form.cleaned_data["searching"]
             article_id = form.cleaned_data["article_id"]
             profile = get_object_or_404(Profile, user__id=user_id)
             article = get_object_or_404(Article, id=article_id)
-            context = {
-                'stores': article.stores.all(),
-                'code': article.code,
-                'nutrition_grades': article.nutrition_grades,
-                'masthead_content': article.product_name,
-                'searched_article': article,
-                'image_url': article.image_url,
-                'nutriments': article.nutriments,
-                'url': article.url,
-                'ingredients': article.ingredients,
-                'content_title': "Voici la fiche détaillée de votre produit"
-            }
             ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
+
+            if come_from == "results":
+                context = _search(searching)
+
+            elif come_from == "detail":
+                context = {
+                    'stores': article.stores.all(),
+                    'code': article.code,
+                    'nutrition_grades': article.nutrition_grades,
+                    'masthead_content': article.product_name,
+                    'searched_article': article,
+                    'image_url': article.image_url,
+                    'nutriments': article.nutriments,
+                    'url': article.url,
+                    'ingredients': article.ingredients,
+                    'content_title': "Voici la fiche détaillée de votre produit"
+                }
+            else:
+                context = {}
+
             context["message"] = 'Your substitute has been registred successfully!'
-            return render(request, 'substitute/detail.html', context)
+            return render(request, 'substitute/' + come_from + '.html', context)
+        else:
+            pass
+    else:
+        pass
     return redirect(search)
 
 

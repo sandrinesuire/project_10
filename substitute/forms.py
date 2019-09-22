@@ -33,6 +33,7 @@ class SubstituteRegisterForm(forms.Form):
     """
     substitute register form
     """
+    come_from = forms.CharField(max_length=100)
     searching = forms.CharField(max_length=100)
     user_id = forms.IntegerField()
     article_id = forms.IntegerField()
