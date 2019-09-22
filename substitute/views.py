@@ -4,13 +4,14 @@ Views
 
 from django import shortcuts
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.db import IntegrityError
 from django.db.models import Q
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as _logout, authenticate, login
+from django.template import loader, RequestContext
 from django.urls import reverse
 from django.utils import http
 
@@ -208,13 +209,35 @@ def detail(request, article_id):
     return render(request, 'substitute/detail.html', context)
 
 
-@login_required
 def register_substitut(request):
     """
     view for display article détail
     :param request:
     :return:
     """
+    if isinstance(request.user, AnonymousUser) and not request.session.get('_old_post'):
+        request.session['_old_post'] = request.POST
+        form = LoginForm(request.POST or None)
+        form_url = "log_in"
+        return render(request, 'substitute/register.html', {'form': form,
+                                                            'form_url': form_url,
+                                                            'redirect_to': register_substitut})
+    elif isinstance(request.user, AnonymousUser) and request.session.get('_old_post'):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(username=username, password=password)
+            if user:  # Si l'objet renvoyé n'est pas None
+                login(request, user)  # nous connectons l'utilisateur
+                request.POST = request.session.pop('_old_post')
+                request.POST['user_id'] = user.id
+            else:
+                messages.error(request, 'username or password not correct')
+                return redirect(log_in)
+        else:
+            messages.error(request, 'formulaire invalid')
+            return redirect(log_in)
     if request.method == "POST":
         form = SubstituteRegisterForm(request.POST)
         if form.is_valid():
