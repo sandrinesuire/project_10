@@ -23,7 +23,7 @@ if os.environ.get('ENV') == 'PRODUCTION':
 else:
     DEBUG = True
 
-ALLOWED_HOSTS = ['thebestsubstitute.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0', 'thebestsubstitute.herokuapp.com', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
