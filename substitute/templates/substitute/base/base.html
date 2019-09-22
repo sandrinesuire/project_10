@@ -61,19 +61,19 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link js-scroll-trigger" href="{% url 'mysubstitutes' %}"><i
-                            class="fas fa-carrot fa-2x fa-fw" title="mon compte"></i></a>
+                            class="fas fa-carrot fa-2x fa-fw" title="Mes produits"></i></a>
                 </li>
 
 
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}"><i
-                                class="fas fa-sign-out-alt fa-2x fa-fw" title="logout"></i></a>
+                                class="fas fa-sign-out-alt fa-2x fa-fw" title="Déconnection"></i></a>
                     </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="{% url 'log_in' %}"><i
-                                class="fas fa-sign-in-alt fa-2x fa-fw" title="login"></i></a>
+                                class="fas fa-sign-in-alt fa-2x fa-fw" title="Créer mon compte/Connection"></i></a>
                     </li>
                 {% endif %}
 

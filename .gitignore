@@ -1,0 +1,4 @@
+venv/
+nutella/__pycache__
+substitute/__pycache__/
+substitute/migrations/__pycache__/
