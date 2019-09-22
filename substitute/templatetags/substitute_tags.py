@@ -22,6 +22,7 @@ def unregistred(article, user_id):
         return False
     return True
 
+
 @register.filter
 def get_item(dictionary, key):
     """

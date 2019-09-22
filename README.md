@@ -45,7 +45,7 @@ Install the libraries
 pip install -r requirements.txt
 ```
 
-## Play
+## Run application
  
 Start the plateform application in development mode :
  * create database nutella on 127.0.0.1:5432 with "sandrine" user and "sandrine" password 
@@ -63,4 +63,4 @@ python manage.py test
 ## Platforms
 
 This application was testing on
-* Ubuntu 18.10 + python 3.6.7
+* Ubuntu 18.10 + python 3.7

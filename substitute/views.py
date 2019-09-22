@@ -198,7 +198,6 @@ def detail(request, article_id):
         form = SubstituteRegisterForm(request.POST)
         if form.is_valid():
             user_id = form.cleaned_data["user_id"]
-            searching = ""
             article_id = form.cleaned_data["article_id"]
             profile = get_object_or_404(Profile, user__id=user_id)
             article = get_object_or_404(Article, id=article_id)
@@ -212,7 +211,6 @@ def register_substitut(request):
     """
     view for display article détail
     :param request:
-    :param article_id: the article id
     :return:
     """
     if request.method == "POST":
