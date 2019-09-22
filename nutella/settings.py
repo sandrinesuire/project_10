@@ -21,9 +21,9 @@ SECRET_KEY = '+wgbpb9yvdc@3z-)2m9=dyyvigm8px$(d=j-_y+kn45h)u8h95'
 if os.environ.get('ENV') == 'PRODUCTION':
     DEBUG = True
 else:
-    DEBUG = True
+    DEBUG = False
 
-ALLOWED_HOSTS = ['0.0.0.0', 'thebestsubstitute.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['thebestsubstitute.herokuapp.com', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
