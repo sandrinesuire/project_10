@@ -7,16 +7,20 @@
             <form class="text-right" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
+                <input type="hidden" name="form_url" value={{ form_url }}/>
                 <button type="submit" class="btn btn-primary">Submit</button>
-                {% if redirect_to %}
-                    <input type="hidden" name="redirect_to" value="{{ redirect_to }}"/>
-                {% endif %}
             </form>
 
             {% if form_url == "log_in" %}
                 <p>Pas encore de compte !!!</p>
 
-                <a href="{% url 'register' redirect_to=redirect_to %}">Créer mon compte</a>
+                <form class="text-right" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_url" value='register'/>
+                    <button type="submit" class="btn btn-primary">Créer un compte</button>
+                </form>
+
+
 
             {% endif %}
             {% for message in messages %}

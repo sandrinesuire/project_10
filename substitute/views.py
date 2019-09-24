@@ -2,18 +2,15 @@
 Views
 """
 
-from django import shortcuts
+from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth.models import User, AnonymousUser
 from django.db import IntegrityError
 from django.db.models import Q
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as _logout, authenticate, login
-from django.template import loader, RequestContext
 from django.urls import reverse
-from django.utils import http
 
 from substitute.forms import UserForm, LoginForm, SearchForm, SubstituteRegisterForm
 from substitute.models import Profile, Article, ProfileSubstitute
@@ -25,63 +22,48 @@ def log_in(request):
     :param request:
     :return:
     """
-    form = LoginForm(request.POST or None)
-    form_url = "log_in"
-    redirect_to = request.POST.get('next', request.GET.get('next', '/'))
-    redirect_to = (redirect_to
-                   if http.is_safe_url(redirect_to, request.get_host())
-                   else '/')
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-
+    if request.method == "POST" and 'register' in request.POST.get('form_url', ""):
+        form = UserForm(request.POST or None)
+        form_url = "register"
         if form.is_valid():
             username = form.cleaned_data["username"]
+            email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
-            user = authenticate(username=username, password=password)
-            if user:  # Si l'objet renvoyé n'est pas None
+            try:
+                user = User.objects.create_user(username, email, password)
+            except IntegrityError:
+                messages.error(request, _('Impossible to create user with these data'))
+                return redirect(log_in)
+            profile = Profile.objects.create(user=user)
+            if profile:  # Si l'objet renvoyé n'est pas None
                 login(request, user)  # nous connectons l'utilisateur
-                return shortcuts.redirect(redirect_to)
+                return redirect(search)
             else:
-                messages.error(request, 'username or password not correct')
+                messages.error(request, _('Impossible to create user with these data'))
                 return redirect(log_in)
         else:
-            messages.error(request, 'formulaire invalid')
-            return redirect(log_in)
+            return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
+    else:
+        form = LoginForm(request.POST or None)
+        form_url = "log_in"
+        if request.method == "POST":
+            form = LoginForm(request.POST)
 
-    return render(request, 'substitute/register.html', {'form': form,
-                                                        'form_url': form_url,
-                                                        'redirect_to': redirect_to})
-
-
-def register(request, redirect_to='/'):
-    """
-    View for registring a new account
-    :param request:
-    :param redirect_to: when anonymous user click on link (needed login), he is redirect to login, he could call the
-    registration url. Redirect_to memorise the link clicked at first by anonymous to redirect him at the good place
-    :return:
-    """
-    form = UserForm(request.POST or None)
-    form_url = "register"
-    if form.is_valid():
-        username = form.cleaned_data["username"]
-        email = form.cleaned_data["email"]
-        password = form.cleaned_data["password"]
-        try:
-            user = User.objects.create_user(username, email, password)
-        except IntegrityError:
-            messages.error(request, 'Impossible to create user with these data')
-            return redirect(register)
-        profile = Profile.objects.create(user=user)
-        if profile:  # Si l'objet renvoyé n'est pas None
-            login(request, user)  # nous connectons l'utilisateur
-            return shortcuts.redirect(redirect_to)
+            if form.is_valid():
+                username = form.cleaned_data["username"]
+                password = form.cleaned_data["password"]
+                user = authenticate(username=username, password=password)
+                if user:  # Si l'objet renvoyé n'est pas None
+                    login(request, user)  # nous connectons l'utilisateur
+                    return redirect(search)
+                else:
+                    messages.error(request, _('username or password not correct'))
+                    return redirect(log_in)
+            else:
+                messages.error(request, _('invalid form'))
+                return redirect(log_in)
         else:
-            messages.error(request, 'Impossible to create user with these data')
-            return redirect(register)
-    return render(request, 'substitute/register.html', {'form': form,
-                                                        'form_url': form_url,
-                                                        'redirect_to': '/'})
+            return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
 
 
 def logout(request):
@@ -126,14 +108,14 @@ def _search(searching):
         result = Article.objects.filter(Q(product_name__contains=second) | Q(product_name__contains=third) |
                                         Q(product_name__istartswith=fourth) | Q(product_name__istartswith=fifth) |
                                         Q(product_name__iendswith=sixth))
-    content_title = "Aucun article ne peut substituer  votre recherche."
+    content_title = _("No article can substitute your search.")
     if result.count() > 0:
         searched_article = result[0]
         image_url = searched_article.image_url
         articles = searched_article.get_article_substitutes_from_bd()
         # return only the first twelve articles
         if articles:
-            content_title = "Vous pouvez remplacer cet aliment par : "
+            content_title = _("You can substitute this product with : ")
             if len(articles) > 12:
                 articles = articles[:12]
             articles.sort(key=lambda x: [x.my_grade, x.ingredients_number, x.keywords_number],
@@ -142,7 +124,7 @@ def _search(searching):
     else:
         searched_article = None
         articles = None
-        content_title = "Nous ne trouvons pas votre article"
+        content_title = _("This article not exist.")
         masthead_content = searching
         image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
                     "twBvkuRWej2Up8zYxgFx-"
@@ -162,19 +144,6 @@ def results(request):
     :return: HttpResponse with message
     """
     pass
-    # context = {}
-    # if request.method == "POST":
-    #     form = SubstituteRegisterForm(request.POST)
-    #     if form.is_valid():
-    #         user_id = form.cleaned_data["user_id"]
-    #         searching = form.cleaned_data["searching"]
-    #         article_id = form.cleaned_data["article_id"]
-    #         profile = get_object_or_404(Profile, user__id=user_id)
-    #         article = get_object_or_404(Article, id=article_id)
-    #         ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
-    #         context = _search(searching)
-    #         context["message"] = 'Your substitute has been registred successfully!'
-    # return render(request, 'substitute/results.html', context)
 
 
 def detail(request, article_id):
@@ -195,7 +164,7 @@ def detail(request, article_id):
         'nutriments': article.nutriments,
         'url': article.url,
         'ingredients': article.ingredients,
-        'content_title': "Voici la fiche détaillée de votre produit"
+        'content_title': _("Here is the detailed card of your product")
     }
     if request.method == "POST":
         form = SubstituteRegisterForm(request.POST)
@@ -205,39 +174,74 @@ def detail(request, article_id):
             profile = get_object_or_404(Profile, user__id=user_id)
             article = get_object_or_404(Article, id=article_id)
             ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
-            context["message"] = 'Your substitute has been registred successfully!'
+            context["message"] = _('Your substitute has been registred successfully!')
     return render(request, 'substitute/detail.html', context)
 
 
+def cust_login_required(func):
+    def func_wrapper(request):
+        if not request.session.get('old_request', None):
+            request.session['old_request'] = request.POST
+        if isinstance(request.user, AnonymousUser):
+            if request.session.get('unlogged') == "first" or request.session.get('unlogged') == None:
+                request.session['unlogged'] = "second"
+                request.method = None
+                return log_in(request)
+            elif request.session.get('unlogged') == "second":
+                if request.method == "POST" and 'register' in request.POST.get('form_url', ""):
+                    form = UserForm(request.POST or None)
+                    form_url = "register"
+                    if form.is_valid():
+                        username = form.cleaned_data["username"]
+                        email = form.cleaned_data["email"]
+                        password = form.cleaned_data["password"]
+                        try:
+                            user = User.objects.create_user(username, email, password)
+                        except IntegrityError:
+                            messages.error(request, _('Impossible to create user with these data'))
+                            return redirect(log_in)
+                        profile = Profile.objects.create(user=user)
+                        if profile:  # Si l'objet renvoyé n'est pas None
+                            login(request, user)  # nous connectons l'utilisateur
+                            request.session['unlogged'] = None
+                            request.session['old_request']['user_id'] = user.id
+                        else:
+                            messages.error(request, _('Impossible to create user with these data'))
+                            return redirect(log_in)
+                    else:
+                        if request.session['unlogged'] == "second":
+                            return log_in(request)
+                        return redirect(log_in)
+                else:
+                    form = LoginForm(request.POST)
+                    if form.is_valid():
+                        username = form.cleaned_data["username"]
+                        password = form.cleaned_data["password"]
+                        user = authenticate(username=username, password=password)
+                        if user:  # Si l'objet renvoyé n'est pas None
+                            login(request, user)  # nous connectons l'utilisateur
+                            request.session['unlogged'] = None
+                            request.session['old_request']['user_id'] = user.id
+                        else:
+                            messages.error(request, _('username or password not correct'))
+                            return redirect(log_in)
+                    else:
+                        messages.error(request, _('invalid form'))
+                        return redirect(log_in)
+        request.POST = request.session.get('old_request', None)
+        return func(request)
+    return func_wrapper
+
+
+@cust_login_required
 def register_substitut(request):
     """
     view for display article détail
     :param request:
     :return:
     """
-    if isinstance(request.user, AnonymousUser) and not request.session.get('_old_post'):
-        request.session['_old_post'] = request.POST
-        form = LoginForm(request.POST or None)
-        form_url = "log_in"
-        return render(request, 'substitute/register.html', {'form': form,
-                                                            'form_url': form_url,
-                                                            'redirect_to': register_substitut})
-    elif isinstance(request.user, AnonymousUser) and request.session.get('_old_post'):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            user = authenticate(username=username, password=password)
-            if user:  # Si l'objet renvoyé n'est pas None
-                login(request, user)  # nous connectons l'utilisateur
-                request.POST = request.session.pop('_old_post')
-                request.POST['user_id'] = user.id
-            else:
-                messages.error(request, 'username or password not correct')
-                return redirect(log_in)
-        else:
-            messages.error(request, 'formulaire invalid')
-            return redirect(log_in)
+    if request.session.get('old_request'):
+        request.session['old_request'] = None
     if request.method == "POST":
         form = SubstituteRegisterForm(request.POST)
         if form.is_valid():
@@ -263,18 +267,13 @@ def register_substitut(request):
                     'nutriments': article.nutriments,
                     'url': article.url,
                     'ingredients': article.ingredients,
-                    'content_title': "Voici la fiche détaillée de votre produit"
+                    'content_title': _("Here is the detailed card of your product")
                 }
             else:
                 context = {}
 
-            context["message"] = 'Your substitute has been registred successfully!'
+            context["message"] = _('Your substitute has been registred successfully!')
             return render(request, 'substitute/' + come_from + '.html', context)
-        else:
-            pass
-    else:
-        pass
-    return redirect(search)
 
 
 @login_required
@@ -286,7 +285,7 @@ def account(request):
     """
     context = {'local_background': 'user',
                'masthead_content': request.user.username,
-               'content_title': "Voici votre profile utilisateur :"
+               'content_title': _("Here is your user profile :")
                }
     return render(request, 'substitute/account.html', context)
 
@@ -298,7 +297,7 @@ def legal(request):
     :return: HttpResponse with message
     """
     context = {
-        "content_title": "Légalité : "
+        "content_title": _("Legality : ")
     }
     return render(request, 'substitute/legal.html', context)
 
@@ -312,13 +311,13 @@ def mysubstitutes(request):
     """
     substitutes = ProfileSubstitute.objects.filter(profile__user=request.user)
     if substitutes:
-        content_title = "Voici la liste de vos substitus :"
+        content_title = _("Here is the list of your substitutes :")
     else:
-        content_title = "Vous n'avez pas encore de substitut d'enregistré"
+        content_title = _("You do not have a registered substitute yet")
     context = {
         'local_background': 'mysubstitutes',
         'substitutes': substitutes,
-        'masthead_content': "Mes substituts",
+        'masthead_content': _("My substitutes"),
         'content_title': content_title
     }
     return render(request, 'substitute/mysubstitutes.html', context)
