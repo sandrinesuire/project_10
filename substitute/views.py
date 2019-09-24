@@ -50,7 +50,7 @@ def cust_login_required(func):
                 request.session['old_request'] = None
             if request.session.get('unlogged'):
                 request.session['unlogged'] = None
-
+            return redirect(log_in)
         return func(request)
     return func_wrapper
 
@@ -87,6 +87,8 @@ def log_in(request):
                 return redirect(log_in)
         elif request.session['unlogged'] == "second":
             request.session['unlogged'] = "third"
+            return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
+        elif not request.session['unlogged']:
             return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
     else:
         form = LoginForm(request.POST or None)
@@ -279,7 +281,7 @@ def register_substitut(request):
 
             context["message"] = _('Your substitute has been registred successfully!')
             return render(request, 'substitute/' + come_from + '.html', context)
-
+    return redirect(log_in)
 
 @cust_login_required
 def account(request):
