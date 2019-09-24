@@ -8,12 +8,51 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.db import IntegrityError
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as _logout, authenticate, login
 from django.urls import reverse
 
 from substitute.forms import UserForm, LoginForm, SearchForm, SubstituteRegisterForm
 from substitute.models import Profile, Article, ProfileSubstitute
+
+
+def cust_login_required(func):
+    """
+    decorator using to force the login and redirect to the initiale request
+    :param func:
+    :return:
+    """
+    def func_wrapper(request):
+        """
+        wrapper of decorator
+        :param request:
+        :return:
+        """
+        try:
+            if not request.session.get('unlogged', "") and not request.session.get('old_request'):
+                request.session['old_request'] = request.POST
+            if isinstance(request.user, AnonymousUser):
+                if not request.session.get('unlogged', ""):
+                    request.session['unlogged'] = "second"
+                    request.method = None
+                    return log_in(request)
+                elif request.session.get('unlogged', "") == "second" and 'register' in request.POST.get('form_url', ""):
+                    return log_in(request)
+                elif request.session.get('unlogged', "") == "third" or (request.session.get(
+                        'unlogged', "") == "second" and 'log_in' in request.POST.get('form_url', "")):
+                    log_in(request)
+            request.POST = request.session.get('old_request')
+            if request.session.get('old_request'):
+                request.session['old_request'] = None
+            if request.session.get('unlogged'):
+                request.session['unlogged'] = None
+        except:
+            if request.session.get('old_request'):
+                request.session['old_request'] = None
+            if request.session.get('unlogged'):
+                request.session['unlogged'] = None
+
+        return func(request)
+    return func_wrapper
 
 
 def log_in(request):
@@ -37,11 +76,17 @@ def log_in(request):
             profile = Profile.objects.create(user=user)
             if profile:  # Si l'objet renvoyé n'est pas None
                 login(request, user)  # nous connectons l'utilisateur
-                return redirect(search)
+                if request.session.get('unlogged'):
+                    request.session['unlogged'] = None
+                if request.session.get('old_request'):
+                    request.session['old_request']['user_id'] = user.id
+                else:
+                    return redirect(search)
             else:
                 messages.error(request, _('Impossible to create user with these data'))
                 return redirect(log_in)
-        else:
+        elif request.session['unlogged'] == "second":
+            request.session['unlogged'] = "third"
             return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
     else:
         form = LoginForm(request.POST or None)
@@ -55,13 +100,17 @@ def log_in(request):
                 user = authenticate(username=username, password=password)
                 if user:  # Si l'objet renvoyé n'est pas None
                     login(request, user)  # nous connectons l'utilisateur
-                    return redirect(search)
+                    if request.session.get('unlogged'):
+                        request.session['unlogged'] = None
+                    if request.session.get('old_request'):
+                        request.session['old_request']['user_id'] = user.id
+                    else:
+                        return redirect(search)
                 else:
-                    messages.error(request, _('username or password not correct'))
+                    messages.error(request, _('Impossible to create user with these data'))
                     return redirect(log_in)
-            else:
-                messages.error(request, _('invalid form'))
-                return redirect(log_in)
+            elif request.session['unlogged'] == "second":
+                return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
         else:
             return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
 
@@ -72,6 +121,7 @@ def logout(request):
     :param request:
     :return:
     """
+    request.session['unlogged'] = None
     _logout(request)
     return redirect(reverse(search))
 
@@ -143,7 +193,19 @@ def results(request):
     :param request:
     :return: HttpResponse with message
     """
-    pass
+    context = {}
+    if request.method == "POST":
+        form = SubstituteRegisterForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data["user_id"]
+            searching = form.cleaned_data["searching"]
+            article_id = form.cleaned_data["article_id"]
+            profile = get_object_or_404(Profile, user__id=user_id)
+            article = get_object_or_404(Article, id=article_id)
+            ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
+            context = _search(searching)
+            context["message"] = 'Your substitute has been registred successfully!'
+    return render(request, 'substitute/results.html', context)
 
 
 def detail(request, article_id):
@@ -178,61 +240,6 @@ def detail(request, article_id):
     return render(request, 'substitute/detail.html', context)
 
 
-def cust_login_required(func):
-    def func_wrapper(request):
-        if not request.session.get('old_request', None):
-            request.session['old_request'] = request.POST
-        if isinstance(request.user, AnonymousUser):
-            if request.session.get('unlogged') == "first" or request.session.get('unlogged') == None:
-                request.session['unlogged'] = "second"
-                request.method = None
-                return log_in(request)
-            elif request.session.get('unlogged') == "second":
-                if request.method == "POST" and 'register' in request.POST.get('form_url', ""):
-                    form = UserForm(request.POST or None)
-                    form_url = "register"
-                    if form.is_valid():
-                        username = form.cleaned_data["username"]
-                        email = form.cleaned_data["email"]
-                        password = form.cleaned_data["password"]
-                        try:
-                            user = User.objects.create_user(username, email, password)
-                        except IntegrityError:
-                            messages.error(request, _('Impossible to create user with these data'))
-                            return redirect(log_in)
-                        profile = Profile.objects.create(user=user)
-                        if profile:  # Si l'objet renvoyé n'est pas None
-                            login(request, user)  # nous connectons l'utilisateur
-                            request.session['unlogged'] = None
-                            request.session['old_request']['user_id'] = user.id
-                        else:
-                            messages.error(request, _('Impossible to create user with these data'))
-                            return redirect(log_in)
-                    else:
-                        if request.session['unlogged'] == "second":
-                            return log_in(request)
-                        return redirect(log_in)
-                else:
-                    form = LoginForm(request.POST)
-                    if form.is_valid():
-                        username = form.cleaned_data["username"]
-                        password = form.cleaned_data["password"]
-                        user = authenticate(username=username, password=password)
-                        if user:  # Si l'objet renvoyé n'est pas None
-                            login(request, user)  # nous connectons l'utilisateur
-                            request.session['unlogged'] = None
-                            request.session['old_request']['user_id'] = user.id
-                        else:
-                            messages.error(request, _('username or password not correct'))
-                            return redirect(log_in)
-                    else:
-                        messages.error(request, _('invalid form'))
-                        return redirect(log_in)
-        request.POST = request.session.get('old_request', None)
-        return func(request)
-    return func_wrapper
-
-
 @cust_login_required
 def register_substitut(request):
     """
@@ -240,8 +247,6 @@ def register_substitut(request):
     :param request:
     :return:
     """
-    if request.session.get('old_request'):
-        request.session['old_request'] = None
     if request.method == "POST":
         form = SubstituteRegisterForm(request.POST)
         if form.is_valid():
@@ -276,7 +281,7 @@ def register_substitut(request):
             return render(request, 'substitute/' + come_from + '.html', context)
 
 
-@login_required
+@cust_login_required
 def account(request):
     """
     Account view
@@ -302,7 +307,7 @@ def legal(request):
     return render(request, 'substitute/legal.html', context)
 
 
-@login_required
+@cust_login_required
 def mysubstitutes(request):
     """
     Mysubstitutes view

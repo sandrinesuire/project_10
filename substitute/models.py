@@ -7,7 +7,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 from openfoodfacts import openfoodfacts
-
 from . import utils
 
 

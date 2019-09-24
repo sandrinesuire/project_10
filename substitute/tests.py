@@ -100,16 +100,17 @@ class SearchingPageTestCase(TestCase):
         data = {
             "user_id": user.id,
             "searching": article.product_name,
-            "article_id": article.id
+            "article_id": article.id,
+            "come_from": "results"
         }
 
-        response = self.client.post(reverse('results'), data)
+        response = self.client.post(reverse('register_substitut'), data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ProfileSubstitute.objects.count(), count + 1)
 
         response = self.client.post(reverse('mysubstitutes'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context[0].dicts[3]['content_title'], 'Voici la liste de vos substitus :')
+        self.assertEqual(response.context[0].dicts[3]['content_title'], 'Voici la liste de vos substituts :')
 
     def test_detail(self):
         """
@@ -139,11 +140,11 @@ class SearchingPageTestCase(TestCase):
                 'username': username,
                 'email': email,
                 'password': password,
-                'redirect_to': ['/']}
+                'form_url': "register"}
 
         count = Profile.objects.count()
 
-        self.client.post(reverse('register'), data)
+        self.client.post(reverse('log_in'), data)
         profile = Profile.objects.first()
 
         self.assertEqual(Profile.objects.count(), count + 1)
@@ -174,4 +175,4 @@ class SearchingPageTestCase(TestCase):
         self.client.post(reverse('logout'))
         self.assertIsNone(self.client.session.get('_auth_user_id'))
         response = self.client.post(reverse('account'))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.templates[0].name, "substitute/register.html")

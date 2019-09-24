@@ -2,10 +2,10 @@
 file overwrite utils from openfoodfact library for forcing the api call to french url
 """
 import sys
-
 from openfoodfacts import facets
 from openfoodfacts import utils
 from openfoodfacts import products
+
 
 openfoodfacts = sys.modules[__name__]
 __version__ = '0.1.0'
