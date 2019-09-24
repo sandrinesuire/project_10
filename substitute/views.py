@@ -85,10 +85,10 @@ def log_in(request):
             else:
                 messages.error(request, _('Impossible to create user with these data'))
                 return redirect(log_in)
-        elif request.session['unlogged'] == "second":
+        elif request.session.get('unlogged', '') == "second":
             request.session['unlogged'] = "third"
             return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
-        elif not request.session['unlogged']:
+        elif not request.session.get('unlogged'):
             return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
     else:
         form = LoginForm(request.POST or None)
@@ -111,7 +111,7 @@ def log_in(request):
                 else:
                     messages.error(request, _('Impossible to create user with these data'))
                     return redirect(log_in)
-            elif request.session['unlogged'] == "second":
+            elif request.session.get('unlogged', '') == "second":
                 return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
         else:
             return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})

@@ -1,5 +1,5 @@
 {% extends 'substitute/base/min_base.html' %}
-
+{% load i18n %}
 {% block content %}
 
 
@@ -10,21 +10,21 @@
           <p class="text-muted mb-0">
 
           <strong><a href="https://fr.openfoodfacts.org">OpenFoodFacts</a></strong>
-              <em> - Données et photos des aliments, nutriscores et repères nutritionnels</em><br>
+              <em> - {% trans 'Food data and photos, nutritional nutrients and benchmarks' %}</em><br>
 
-          <strong>Creative Bootstrap</strong><em> - Thème CSS</em><br>
+          <strong>Creative Bootstrap</strong><em> - {% trans 'CSS theme' %}</em><br>
 
-          <strong>Google Font</strong><em> - Open Sans, Scope One</em><br>
+          <strong>Google Font</strong><em> - 'Open Sans, Scope One'</em><br>
 
-          <strong>Numerama</strong><em> - Logos nutriscore</em><br>
+          <strong>Numerama</strong><em> - {% trans 'Nutriscore Logos' %}</em><br>
 
-          <strong>Banque image personnelle</strong><em> - Logos account user</em><br>
+          <strong>{% trans 'Personal image bank' %}</strong><em> - {% trans 'Account User Logos' %}</em><br>
 
-          <strong>Font Awesome</strong><em> - Icônes dans différentes pages</em><br>
+          <strong>Font Awesome</strong><em> - {% trans 'Icons in different pages' %}</em><br>
 
-          <strong>Hébergement</strong><em><a href="https://www.heroku.com/"> - Heroku</a></em><br>
+          <strong>{% trans 'Web Host' %}</strong><em><a href="https://www.heroku.com/"> - Heroku</a></em><br>
 
-          <strong>Copyright &copy; Sandrine</strong><em> - Tous droits réservés</em><br>
+          <strong>Copyright &copy; Sandrine</strong><em> - {% trans 'All rights reserved' %}</em><br>
 
           </p>
         </div>

@@ -1,6 +1,6 @@
 {% extends 'substitute/base/full_base.html' %}
 
-{% load static %}
+{% load static i18n %}
 
 {% block masthead_content %}
         <div class="text-white m-5 p-5">
@@ -8,16 +8,16 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="hidden" name="form_url" value={{ form_url }}/>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
             </form>
 
             {% if form_url == "log_in" %}
-                <p>Pas encore de compte !!!</p>
+                <p>{% trans 'No account yet !!!' %}</p>
 
                 <form class="text-right" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="form_url" value='register'/>
-                    <button type="submit" class="btn btn-primary">Créer un compte</button>
+                    <button type="submit" class="btn btn-primary">{% trans 'Create an account' %}</button>
                 </form>
 
 

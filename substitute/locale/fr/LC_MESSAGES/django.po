@@ -1,0 +1,344 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-24 17:42+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: substitute/models.py:42
+msgid "The category name from openfoodfact api."
+msgstr "Le nom de la catégorie de l'API openfoodfact"
+
+#: substitute/models.py:58
+msgid "The store name from openfoodfact api."
+msgstr "Le nom du magasin de l'API openfoodfact"
+
+#: substitute/models.py:83
+msgid "the relation with store model"
+msgstr "la relation avec le modèle Store"
+
+#: substitute/models.py:87
+msgid "The BarCode from openfoodfact api."
+msgstr "Le nom CodeBarre de l'API openfoodfact"
+
+#: substitute/models.py:92
+msgid "The nutrition grade of article from openfoodfact api."
+msgstr "Le grade de nutrition de l'API openfoodfact"
+
+#: substitute/models.py:96
+msgid "The store id from openfoodfact api."
+msgstr "L'identifiant du magasin de l'API openfoodfact"
+
+#: substitute/models.py:101
+msgid "the relation with category model"
+msgstr "la relation avec le modèle Category"
+
+#: substitute/models.py:105
+msgid "The article name from openfoodfact api."
+msgstr "Le nom de l'article' de l'API openfoodfact"
+
+#: substitute/models.py:110
+msgid "The url article image from openfoodfact api."
+msgstr "L'url de l'image de  l'article' de l'API openfoodfact"
+
+#: substitute/models.py:115
+msgid "List of article nutriments from openfoodfact api."
+msgstr "La liste des nutriments de l'article de l'API openfoodfact"
+
+#: substitute/models.py:120
+msgid "The url article from openfoodfact api."
+msgstr "L'url de l'article' de l'API openfoodfact"
+
+#: substitute/models.py:125
+msgid "List of article ingredients from openfoodfact api."
+msgstr "La liste des ingrédients de l'article de l'API openfoodfact"
+
+#: substitute/models.py:130
+msgid "List of article _keywords from openfoodfact api."
+msgstr "La liste des mots clés de l'article de l'API openfoodfact"
+
+#: substitute/models.py:135 substitute/models.py:139 substitute/models.py:143
+#: substitute/models.py:147
+msgid "Internal field for working."
+msgstr "Champ interne pour le travail"
+
+#: substitute/models.py:309
+msgid "the relation with Profile model"
+msgstr "la relation avec le modèle Profile"
+
+#: substitute/models.py:315
+msgid "the relation with Article model"
+msgstr "la relation avec le modèle Article"
+
+#: substitute/templates/substitute/base/base.html:40
+msgid " Pure Butter"
+msgstr "Pur Beurre"
+
+#: substitute/templates/substitute/base/base.html:53
+#: substitute/templates/substitute/search.html:17
+msgid "search"
+msgstr "rechercher"
+
+#: substitute/templates/substitute/base/base.html:53
+#: substitute/templates/substitute/search.html:17
+msgid "search a substitute"
+msgstr "rechercher un substitut."
+
+#: substitute/templates/substitute/base/base.html:59
+msgid "My account"
+msgstr "Mon compte"
+
+#: substitute/templates/substitute/base/base.html:63 substitute/views.py:327
+msgid "My substitutes"
+msgstr "Mes substituts."
+
+#: substitute/templates/substitute/base/base.html:70
+msgid "Logout"
+msgstr "Déconnection"
+
+#: substitute/templates/substitute/base/base.html:75
+msgid "Create an account/Signup"
+msgstr "Créer un compte utilisateur/Connection"
+
+#: substitute/templates/substitute/detail.html:19
+msgid "Nutritional benchmarks for 100g"
+msgstr "Repères nutritionnels pour 100g"
+
+#: substitute/templates/substitute/detail.html:24
+msgid "Energy (kcal)"
+msgstr "Energie"
+
+#: substitute/templates/substitute/detail.html:28
+msgid "Fat/lipids"
+msgstr "Matières grasses/Lipides"
+
+#: substitute/templates/substitute/detail.html:32
+msgid "Of which saturated fatty acids"
+msgstr "dont acides gras saturés"
+
+#: substitute/templates/substitute/detail.html:36
+msgid "Carbohydrates"
+msgstr "Glucides"
+
+#: substitute/templates/substitute/detail.html:40
+msgid "Of which sugar"
+msgstr "dont sucres"
+
+#: substitute/templates/substitute/detail.html:44
+msgid "Dietary fiber"
+msgstr "Fibres alimentaires"
+
+#: substitute/templates/substitute/detail.html:48
+msgid "Protein"
+msgstr "Protéines"
+
+#: substitute/templates/substitute/detail.html:52
+msgid "Salt"
+msgstr "Sel"
+
+#: substitute/templates/substitute/detail.html:56
+msgid "Of which Sodium"
+msgstr "dont sodium"
+
+#: substitute/templates/substitute/detail.html:60
+msgid "Nutritional Score - France"
+msgstr "Score nutritionnel"
+
+#: substitute/templates/substitute/detail.html:64
+msgid "Of which Nutri-Score"
+msgstr "dont Nutri-Score"
+
+#: substitute/templates/substitute/detail.html:76
+msgid "Store likely to sell this product :"
+msgstr "Magasins suceptibles de fournir ce produit :"
+
+#: substitute/templates/substitute/detail.html:86
+#| msgid "The store id from openfoodfact api."
+msgid "See the Openfoodfact card ."
+msgstr "Consulter la fiche Openfoodfact ."
+
+#: substitute/templates/substitute/detail.html:96
+#: substitute/templates/substitute/results.html:48
+msgid " Save"
+msgstr "Sauvegarder"
+
+#: substitute/templates/substitute/detail.html:100
+#: substitute/templates/substitute/results.html:51
+msgid "This article has already been saved in your substitutes."
+msgstr "Cet article a déjà été sauvegardé dans votre liste de substituts."
+
+#: substitute/templates/substitute/legal.html:13
+msgid "Food data and photos, nutritional nutrients and benchmarks"
+msgstr "Données et photos des aliments, nutriscores et repères nutritionnels"
+
+#: substitute/templates/substitute/legal.html:15
+msgid "CSS theme"
+msgstr "Thème CSS"
+
+#: substitute/templates/substitute/legal.html:19
+msgid "Nutriscore Logos"
+msgstr "Logos Nutriscore"
+
+#: substitute/templates/substitute/legal.html:21
+msgid "Personal image bank"
+msgstr "Banque d'image personnelle"
+
+#: substitute/templates/substitute/legal.html:21
+msgid "Account User Logos"
+msgstr "Logos Compte utilisateur"
+
+#: substitute/templates/substitute/legal.html:23
+msgid "Icons in different pages"
+msgstr "Icones dans différentes pages"
+
+#: substitute/templates/substitute/legal.html:25
+msgid "Web Host"
+msgstr "Hébergeur Web"
+
+#: substitute/templates/substitute/legal.html:27
+msgid "All rights reserved"
+msgstr "Tous droits réservés"
+
+#: substitute/templates/substitute/register.html:11
+msgid "Submit"
+msgstr "Envoyer"
+
+#: substitute/templates/substitute/register.html:15
+msgid "No account yet !!!"
+msgstr "Pas encore de compte !!!"
+
+#: substitute/templates/substitute/register.html:20
+msgid "Create an account"
+msgstr "Créer un compte utilisateur"
+
+#: substitute/templates/substitute/results.html:10
+#| msgid "Your substitute has been registred successfully!"
+msgid "Your substitute has just been save !"
+msgstr "Votre substitue a été enregistré avec succès."
+
+#: substitute/templates/substitute/search.html:8
+msgid "Fat, yes, but quality!"
+msgstr "Du gras, oui, mais de qualité !"
+
+#: substitute/templates/substitute/search.html:12
+msgid ""
+"Find a substitute for those you eat every day."
+msgstr "Trouvez un produit de substitution pour ceux que vous consommez tous les jours."
+
+#: substitute/templates/substitute/search.html:17
+msgid "product"
+msgstr "produit"
+
+#: substitute/templates/substitute/search.html:18
+#| msgid "search"
+msgid "Search"
+msgstr "Rechercher"
+
+#: substitute/templates/substitute/search.html:28
+msgid "From ratatouille to croissants."
+msgstr "De la ratatouille aux croissants"
+
+#: substitute/templates/substitute/search.html:28
+msgid ""
+"Pure Butter is the initiative of two lovers of French gastronomy, Colette "
+"Tatou and Rémy, whom you have certainly met in our excellent restaurant "
+"Ratatouille."
+msgstr ""
+"Pur Beurre est l'initiative de deux amoureux de la gastronomie française, Colette "
+"Tatou et Rémy, que vous avez déjà certainement rencontrés dans notre excellent restaurant "
+"Ratatouille."
+
+#: substitute/templates/substitute/search.html:35
+msgid ""
+"We all love to eat, especially in France! Personally, a fresh baguette, good "
+"goat cheese and a good red wine are enough for me. Like everyone else, I "
+"shop at the supermarket. But little by little I realized, especially when we "
+"opened the restaurant, that I could replace the sanitized products that I "
+"used to buy with good local products And often for the same price!"
+msgstr ""
+"Nous aimons tous manger, surtout en France ! Personnellement, une baguette fraîche, du bon "
+"fromage de chèvre et un bon vin rouge me suffisent amplement. Comme tout le monde, je "
+"fais mes courses au supermarché. Mais petit à petit je me suis rendue compte, surtout lorsque nous avons "
+"ouvert le restaurant, que je pouvais remplacer les produits aseptisés que j'avais "
+"l'habitude d'acheter par de bons produits du terroir Et souvent pour le même prix !"
+
+#: substitute/templates/substitute/search.html:42
+msgid ""
+"For my part I already went to many stores because I love to walk around, "
+"especially in cellars and kitchens. I knew by heart the content of organic "
+"shops (which I love) and the ingredients of all the food sold. When Colette "
+"asked me if she could replace her morning Nutella with a healthier food, I "
+"knew where to find it right away. The idea of ​​Pure Butter was born!"
+msgstr ""
+"Pour ma part je me rendais déjà dans bien des magasins car j'aime beaucoup me balader, "
+"surtout dans les caves et les cuisines. Je connaissais par coeur le contenu des boutiques bio "
+"(dont je raffole) ainsi que les ingrédients de tous les aliments vendus. Lorsque Colette "
+"m'a demandé si elle pouvait remplacer son Nutella matinal par un aliment plus sain, je "
+"savais tout de suite où le trouver. L'idée de Pur Beurre était née !"
+
+
+#: substitute/templates/substitute/search.html:60
+msgid "Contact us !"
+msgstr "Contactez-nous !"
+
+#: substitute/templates/substitute/search.html:62
+msgid ""
+"We make every effort to bring new features (online orders of your favorite "
+"products, eg ...), so do not hesitate to contact us if you have any "
+"questions or comments."
+msgstr ""
+"Nous mettons tout en oeuvre pour apporter de nouvelles fonctionalités (commandes en lignes de vos produits favoris"
+", par ex ...), alors n'hésitez pas à prendre contact avec nous si vous avez la moindre "
+"question ou remarque."
+
+#: substitute/views.py:74 substitute/views.py:86 substitute/views.py:112
+msgid "Impossible to create user with these data"
+msgstr "Impossible de créer l'utilisateur avec ces données."
+
+#: substitute/views.py:163
+msgid "No article can substitute your search."
+msgstr "Aucun article ne peut substituer votre recherche."
+
+#: substitute/views.py:170
+msgid "You can substitute this product with : "
+msgstr "Vous pouvez substituer ce produit avec : "
+
+#: substitute/views.py:179
+msgid "This article not exist."
+msgstr "Cet article n'existe pas."
+
+#: substitute/views.py:231 substitute/views.py:277
+msgid "Here is the detailed card of your product"
+msgstr "Voici le détail de votre fiche produit."
+
+#: substitute/views.py:241 substitute/views.py:282
+msgid "Your substitute has been registred successfully!"
+msgstr "Votre substitue a été enregistré avec succès."
+
+#: substitute/views.py:295
+msgid "Here is your user profile :"
+msgstr "Voici votre fiche utilisateur :"
+
+#: substitute/views.py:307
+msgid "Legality : "
+msgstr "Légalité : "
+
+#: substitute/views.py:321
+msgid "Here is the list of your substitutes :"
+msgstr "Voici la liste de vos substituts :"
+
+#: substitute/views.py:323
+msgid "You do not have a registered substitute yet"
+msgstr "Vous n'avez pas encore de substitut enregistré."

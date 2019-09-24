@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +37,7 @@
     <div class="container">
         <a class="navbar-brand js-scroll-trigger" href="{% url 'search' %}"><img class="img-responsive"
                                                                                  src="{% static 'substitute/img/logo_pur_beurre29.png' %}"
-                                                                                 alt="PurBeurre"> Pur Beurre</a>
+                                                                                 alt="PurBeurre">{% trans " Pure Butter" %}</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                 data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -50,30 +50,29 @@
                         {% csrf_token %}
                         <div class="form-group">
                             {% csrf_token %}
-                            <input type="text" name="searching" value="" id="searching" placeholder="rechercher"
-                                   title="rechercher un substitue">
+                            <input type="text" name="searching" id="searching" placeholder="{% trans 'search' %}" title="{% trans 'search a substitute' %}"/>
                         </div>
                     </form>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link js-scroll-trigger" href="{% url 'account' %}"><i class="fas fa-user fa-2x fa-fw"
-                                                                                        title="mon compte"></i></a>
+                                                                                        title="{% trans 'My account' %}"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link js-scroll-trigger" href="{% url 'mysubstitutes' %}"><i
-                            class="fas fa-carrot fa-2x fa-fw" title="Mes produits"></i></a>
+                            class="fas fa-carrot fa-2x fa-fw" title="{% trans 'My substitutes' %}"></i></a>
                 </li>
 
 
                 {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}"><i
-                                class="fas fa-sign-out-alt fa-2x fa-fw" title="Déconnection"></i></a>
+                                class="fas fa-sign-out-alt fa-2x fa-fw" title="{% trans 'Logout' %}"></i></a>
                     </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="{% url 'log_in' %}"><i
-                                class="fas fa-sign-in-alt fa-2x fa-fw" title="Créer mon compte/Connection"></i></a>
+                                class="fas fa-sign-in-alt fa-2x fa-fw" title="{% trans 'Create an account/Signup'%}""></i></a>
                     </li>
                 {% endif %}
 
