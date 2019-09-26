@@ -20,9 +20,6 @@
     </script>
 
     <div class="row no-gutters mb-6">
-        <h5>{% trans 'your initial search : '%}{{ initial_search }}</h5>
-    </div>
-    <div class="row no-gutters mb-6">
         {% if articles is None %}
         {% else %}
             {% for article in articles %}
@@ -64,6 +61,11 @@
 
         {% endif %}
     </div>
+
+    <div class="row no-gutters mb-6">
+        <h5>{% trans 'Title proposal related to your research : '%}{{ initial_search }}</h5>
+    </div>
+
 {% endblock %}
 
 
