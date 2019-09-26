@@ -169,7 +169,7 @@ def _search(searching):
         image_url = searched_article.image_url
         articles = searched_article.get_article_substitutes_from_bd()
         if not articles:
-            articles = results
+            articles = results[1:]
         # return only the first twelve articles
         if articles:
             content_title = _("You can substitute this product with : ")
