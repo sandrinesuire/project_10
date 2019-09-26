@@ -342,3 +342,6 @@ msgstr "Voici la liste de vos substituts :"
 #: substitute/views.py:323
 msgid "You do not have a registered substitute yet"
 msgstr "Vous n'avez pas encore de substitut enregistré."
+
+msgid "your initial search : "
+msgstr "Votre recherche initiale : "

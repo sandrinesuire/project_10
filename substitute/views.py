@@ -155,7 +155,7 @@ def _search(searching):
     fourth = searching + '.'
     fifth = searching + ' '
     sixth = ' ' + searching
-    result = Article.objects.filter(product_name__iendswith=first)
+    result = Article.objects.filter(product_name__icontains=first)
     if not result:
         result = Article.objects.filter(Q(product_name__contains=second) | Q(product_name__contains=third) |
                                         Q(product_name__istartswith=fourth) | Q(product_name__istartswith=fifth) |

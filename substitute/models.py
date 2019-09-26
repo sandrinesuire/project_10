@@ -230,7 +230,7 @@ class Article(models.Model):
             try:
                 ingredients_number = sum(1 for x in
                                          [v.lower() for d in searched_article.ingredients for (k, v) in d.items() if
-                                          k == "text" and d["rank"] < 5] if
+                                          k == "text"] if
                                          x in [v.lower() for d in substitute.ingredients for (k, v) in d.items() if
                                                k == "text"])
             except KeyError:
