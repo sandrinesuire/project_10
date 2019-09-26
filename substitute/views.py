@@ -155,16 +155,21 @@ def _search(searching):
     fourth = searching + '.'
     fifth = searching + ' '
     sixth = ' ' + searching
-    result = Article.objects.filter(product_name__icontains=first)
-    if not result:
-        result = Article.objects.filter(Q(product_name__contains=second) | Q(product_name__contains=third) |
+    results = Article.objects.filter(product_name__icontains=first)
+    initial_search = ""
+    if not results:
+        results = Article.objects.filter(Q(product_name__contains=second) | Q(product_name__contains=third) |
                                         Q(product_name__istartswith=fourth) | Q(product_name__istartswith=fifth) |
                                         Q(product_name__iendswith=sixth))
+    for result in results:
+        initial_search += result.product_name + ", "
     content_title = _("No article can substitute your search.")
-    if result.count() > 0:
-        searched_article = result[0]
+    if results.count() > 0:
+        searched_article = results[0]
         image_url = searched_article.image_url
         articles = searched_article.get_article_substitutes_from_bd()
+        if not articles:
+            articles = results
         # return only the first twelve articles
         if articles:
             content_title = _("You can substitute this product with : ")
@@ -185,7 +190,8 @@ def _search(searching):
         'articles': articles,
         'masthead_content': masthead_content,
         'image_url': image_url,
-        'content_title': content_title
+        'content_title': content_title,
+        'initial_search': initial_search
     }
 
 
