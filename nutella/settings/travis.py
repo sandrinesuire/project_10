@@ -1,4 +1,4 @@
-from .production import *
+from . import *
 
 DATABASES = {
     'default': {
