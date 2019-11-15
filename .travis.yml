@@ -2,8 +2,6 @@ language: python
 python:
   - '3.7'
 
-dist: bionic
-
 # safelist
 branches:
   only:
@@ -15,7 +13,7 @@ before_script:
   - pip install git+https://github.com/openfoodfacts/openfoodfacts-python
 
 services:
-  - postgresql: "9.6"
+  - postgresql
 
 env: DJANGO_SETTINGS_MODULE=nutella.travis
 
