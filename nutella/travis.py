@@ -6,7 +6,7 @@ from nutella.settings import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
+        'NAME': 'test',
         'USER': 'postgres',
         'PASSWORD': '',
         'HOST': '',
