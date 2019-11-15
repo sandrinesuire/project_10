@@ -16,7 +16,7 @@ before_script:
   - psql -c 'create database test;' -U postgres
 
 services:
-  - postgresql
+  - postgresql: "9.6"
 
 env: DJANGO_SETTINGS_MODULE=nutella.travis
 
