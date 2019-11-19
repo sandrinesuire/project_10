@@ -2,3 +2,5 @@ venv/
 nutella/__pycache__
 substitute/__pycache__/
 substitute/migrations/__pycache__/
+nutella/settings/production.py
+nutella/staticfiles/

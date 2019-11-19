@@ -17,7 +17,7 @@ before_script:
 services:
   - postgresql: "9.6"
 
-env: DJANGO_SETTINGS_MODULE=nutella.travis
+env: DJANGO_SETTINGS_MODULE=nutella.settings.travis
 
 script:
   - ./manage.py test
