@@ -4,7 +4,9 @@ Tests
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
-from substitute.models import Article, register_api_data_db, valid_product, Profile, ProfileSubstitute
+
+from substitute.management.commands.updatedb import register_api_data_db, valid_product
+from substitute.models import Article, Profile, ProfileSubstitute
 
 
 class SearchingPageTestCase(TestCase):
