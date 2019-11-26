@@ -285,7 +285,7 @@ def register_substitut(request):
                 }
             else:
                 context = {}
-
+            print("test log ", user_id)
             agent.add_custom_parameter('user_id', user_id)
 
             context["message"] = _('Your substitute has been registred successfully!')
