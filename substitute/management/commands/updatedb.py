@@ -1,3 +1,5 @@
+import os
+
 import openfoodfacts
 from django.core.management.base import BaseCommand
 
@@ -5,7 +7,7 @@ from substitute import utils
 from substitute.models import Article, Category
 
 
-DJANGO_SETTINGS_MODULE="nutella.settings.production"
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nutella.settings')
 
 
 class Command(BaseCommand):
