@@ -7,7 +7,7 @@ from substitute import utils
 from substitute.models import Article, Category
 
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nutella.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nutella.settings.production')
 
 
 class Command(BaseCommand):
