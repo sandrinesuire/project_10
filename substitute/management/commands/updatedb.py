@@ -7,9 +7,6 @@ from substitute import utils
 from substitute.models import Article, Category
 
 
-
-
-
 class Command(BaseCommand):
 
     help = 'Command to update database with openfoodfacts api data'
