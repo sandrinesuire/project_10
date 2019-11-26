@@ -164,39 +164,39 @@ class Article(models.Model):
 
         return substitutes
 
-    def get_substitute_from_api(self):
-        """
-        Method returning the best substitutes Article object for searched_article_id from api
-        :return: Article object
-        """
-        category = self.categories[0]
-
-        search_terms = ' '.join(self.product_name.split(' ')[:1])
-
-        # first search in biologic agriculture
-        substitutes = get_api_article_substitutes(category, search_terms, bio=True)
-        substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes)
-
-        if substitutes:
-            return substitutes[0]
-        else:
-            substitutes = get_api_article_substitutes(category, search_terms)
-            substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes)
-
-            if substitutes:
-                return substitutes[0]
-            else:
-                search_terms = ' '.join(self.product_name.split(' ')[:2])
-
-                substitutes1 = get_api_article_substitutes(category, search_terms)
-                substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes1)
-                if substitutes:
-                    return substitutes[0]
-                elif substitutes1:
-                    return substitutes1[0]
-                else:
-                    return None
-
+    # def get_substitute_from_api(self):
+    #     """
+    #     Method returning the best substitutes Article object for searched_article_id from api
+    #     :return: Article object
+    #     """
+    #     category = self.categories[0]
+    #
+    #     search_terms = ' '.join(self.product_name.split(' ')[:1])
+    #
+    #     # first search in biologic agriculture
+    #     substitutes = get_api_article_substitutes(category, search_terms, bio=True)
+    #     substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes)
+    #
+    #     if substitutes:
+    #         return substitutes[0]
+    #     else:
+    #         substitutes = get_api_article_substitutes(category, search_terms)
+    #         substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes)
+    #
+    #         if substitutes:
+    #             return substitutes[0]
+    #         else:
+    #             search_terms = ' '.join(self.product_name.split(' ')[:2])
+    #
+    #             substitutes1 = get_api_article_substitutes(category, search_terms)
+    #             substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes1)
+    #             if substitutes:
+    #                 return substitutes[0]
+    #             elif substitutes1:
+    #                 return substitutes1[0]
+    #             else:
+    #                 return None
+    #
     @staticmethod
     def filter_substitutes_by_keyword_and_ingredients(searched_article, substitutes):
         """
@@ -271,7 +271,7 @@ class Article(models.Model):
         ingredients = product.get("ingredients", None)
         keywords = product.get("_keywords", None)
 
-        article = Article.objects.create(
+        article = Article.objects.get_or_create(
             code=code,
             nutrition_grades=nutrition_grades,
             id_api=id_api,
@@ -281,18 +281,12 @@ class Article(models.Model):
             url=url,
             ingredients=ingredients,
             keywords=keywords
-        )
+        )[0]
 
         stores = product.get("stores", None)
         if stores:
             for name in stores.split(','):
                 article.stores.add(Store.objects.get_or_create(name=name)[0])
-        # categories aren't registred because heroku limit the number of row, and a product may have 10 categories,
-        # it is too much
-        # categories = product.get("categories", None)
-        # if categories:
-        #     for name in categories.split(','):
-        #         article.categories.add(Category.objects.get_or_create(name=name)[0])
         article.save()
 
         return article
@@ -360,62 +354,3 @@ def get_api_article_substitutes(category_api='', search_terms='', bio=None):
         article = Article.register_from_product(product)
         articles.append(article)
     return articles
-
-
-def register_api_data_db(categories_nb=10, product_number_by_category=200, max_page_by_category=200):
-    """
-    Method getting initial data from openfoodfacts api and storing them in database
-    :return:
-    """
-    # get all categories from openfoodfacts api
-    categories = utils.facets.get_categories()
-
-    for category in categories[:categories_nb]:
-        name = category.get('name', None)
-        if name:
-            category = Category.objects.get_or_create(name=name)[0]
-            # some articles are not available, so count to force min 60 product available by category
-            # but break after 14 pages
-            page, count_product = 1, 0
-            while page < max_page_by_category:
-                products = openfoodfacts.products.get_by_category(name, page=page)
-                for product in products:
-                    if valid_product(product):
-                        article = Article.register_from_product(product)
-                        article.categories.add(category)
-                        count_product = (count_product + 1) if article else count_product
-                    if count_product >= product_number_by_category:
-                        break
-                page += 1
-                if count_product >= product_number_by_category:
-                    break
-
-
-def valid_product(product):
-    """
-    Method verifying existing field : minimum
-    :param product: product dict from api
-    :return: Boolean
-    """
-    # check if article already existing
-    id_api = product.get("id", None)
-    if not id_api or Article.objects.filter(id_api=id_api).exists():
-        return False
-
-    # check if minimum keys exist in product
-    keys = [
-        "nutrition_grades",
-        "categories",
-        "code",
-        "id",
-        "_keywords",
-        "ingredients"
-    ]
-    for key in keys:
-        if not product.get(key) or product.get(key) == ['']:
-            return False
-    if not product.get("product_name_fr") or product.get('product_name_fr') == ['']:
-        if not product.get("product_name") or product.get('product_name') == ['']:
-            return False
-
-    return True
