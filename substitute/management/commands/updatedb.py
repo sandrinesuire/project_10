@@ -5,7 +5,6 @@ from django.core.management.base import BaseCommand
 
 from substitute import utils
 from substitute.models import Article, Category
-import nutella.settings.production
 
 
 class Command(BaseCommand):

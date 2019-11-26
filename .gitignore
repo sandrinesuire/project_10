@@ -4,4 +4,3 @@ substitute/__pycache__/
 substitute/migrations/__pycache__/
 nutella/settings/production.py
 nutella/staticfiles/
-updatedb.sh
