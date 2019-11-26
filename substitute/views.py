@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout as _logout, authenticate, login
 from django.urls import reverse
+from newrelic import agent
 
 from substitute.forms import UserForm, LoginForm, SearchForm, SubstituteRegisterForm
 from substitute.models import Profile, Article, ProfileSubstitute
@@ -284,6 +285,8 @@ def register_substitut(request):
                 }
             else:
                 context = {}
+            print("test log ", user_id)
+            agent.add_custom_parameter('user_id', user_id)
 
             context["message"] = _('Your substitute has been registred successfully!')
             return render(request, 'substitute/' + come_from + '.html', context)
