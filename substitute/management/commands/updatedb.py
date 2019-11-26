@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = 'Command to update database with openfoodfacts api data'
 
     def handle(self, *args, **options):
-        register_api_data_db(2, 5, 2)
+        register_api_data_db(50, 100, 100)
         self.stdout.write('This was extremely simple!!!')
 
 
