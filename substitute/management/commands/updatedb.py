@@ -14,7 +14,6 @@ class Command(BaseCommand):
     help = 'Command to update database with openfoodfacts api data'
 
     def handle(self, *args, **options):
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nutella.settings.production')
         register_api_data_db(2, 5, 2)
         self.stdout.write('This was extremely simple!!!')
 
