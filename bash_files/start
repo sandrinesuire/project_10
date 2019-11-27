@@ -1,0 +1,16 @@
+export DJANGO_SETTINGS_MODULE='nutella.settings.production'
+sudo service postgresql start
+pip install -r ocpizza/requirements.txt
+newrelic-admin generate-config YOUR__________LICENSE____________KEY newrelic.ini
+./manage.py collectstatic
+./manage.py makemigrations
+./manage.py migrate
+sudo service supervisor start
+sudo supervisorctl start all
+echo "export EDITOR=nano" >>  ~/.bashrc
+source  ~/.bashrc
+crontab -e
+***************coller à la fin du fichier **************
+0 0 * * 0 /home/sandrinesuire/project_10/updatedb.sh
+********************************************************
+
