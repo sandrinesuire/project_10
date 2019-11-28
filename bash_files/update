@@ -7,4 +7,3 @@ pip install -r ocpizza/requirements.txt
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl restart all
-test

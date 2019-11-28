@@ -18,7 +18,7 @@ sudo apt-get install supervisor
 pip install newrelic
 ********recupèrer la licence key de newrelic********
 newrelic-admin generate-config YOUR__________LICENSE____________KEY newrelic.ini
-sudo nano /etc/supervisor/conf.d/availables/nutella
+sudo nano /etc/supervisor/conf.d/nutella-gunicorn.conf
 ********************coller file_nutella-gunicorn***
 ***************************************************
 echo "export EDITOR=nano" >>  ~/.bashrc
