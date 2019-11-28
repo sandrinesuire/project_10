@@ -15,6 +15,9 @@ sudo nano /etc/nginx/sites-availables/nutella
 cd /etc/nginx/sites-enabled
 ln -s ../sites-available/nutella
 sudo apt-get install supervisor
+pip install newrelic
+********recupèrer la licence key de newrelic********
+newrelic-admin generate-config YOUR__________LICENSE____________KEY newrelic.ini
 sudo nano /etc/supervisor/conf.d/availables/nutella
 ********************coller file_nutella-gunicorn***
 ***************************************************
