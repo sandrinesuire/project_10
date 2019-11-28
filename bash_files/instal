@@ -18,3 +18,9 @@ sudo apt-get install supervisor
 sudo nano /etc/supervisor/conf.d/availables/nutella
 ********************coller file_nutella-gunicorn***
 ***************************************************
+echo "export EDITOR=nano" >>  ~/.bashrc
+source  ~/.bashrc
+crontab -e
+***************coller à la fin du fichier **************
+0 0 * * 0 /home/sandrinesuire/project_10/updatedb.sh
+********************************************************
