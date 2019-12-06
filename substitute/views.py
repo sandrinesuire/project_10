@@ -175,8 +175,7 @@ def _search(searching):
         # return only the first twelve articles
         if articles:
             content_title = _("You can substitute this product with : ")
-            if len(articles) > 12:
-                articles = articles[:12]
+            articles = articles[:12]
             articles.sort(key=lambda x: [x.my_grade, x.ingredients_number, x.keywords_number],
                           reverse=True)
         masthead_content = searched_article.product_name
