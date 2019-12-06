@@ -165,7 +165,7 @@ def _search(searching):
     for result in results:
         initial_search += result.product_name + ", "
     content_title = _("No article can substitute your search.")
-    results = Article.filter_best_article(results)
+    results = Article.filter_best_article(results) if results else None
     if results.count() > 0:
         searched_article = results[0]
         image_url = searched_article.image_url
