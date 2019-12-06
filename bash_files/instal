@@ -21,9 +21,5 @@ newrelic-admin generate-config YOUR__________LICENSE____________KEY newrelic.ini
 sudo nano /etc/supervisor/conf.d/nutella-gunicorn.conf
 ********************coller file_nutella-gunicorn***
 ***************************************************
-echo "export EDITOR=nano" >>  ~/.bashrc
-source  ~/.bashrc
-crontab -e
-***************coller à la fin du fichier **************
-0 0 * * 0 /home/sandrinesuire/project_10/updatedb.sh
-********************************************************
+***************script_cron*************************
+***************************************************

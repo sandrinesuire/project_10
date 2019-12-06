@@ -291,6 +291,15 @@ class Article(models.Model):
 
         return article
 
+    @classmethod
+    def filter_best_article(cls, results):
+        """
+        Method filtering the results by the mosted call category
+        """
+        best_cat = max(set([a.categories.all()[0].id for a in results]), key=[a.categories.all()[0].id for a in results].count)
+        results = results.filter(categories__id=best_cat)
+        return results
+
 
 class ProfileSubstitute(models.Model):
     """
