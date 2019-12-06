@@ -7,12 +7,14 @@ from substitute import utils
 from substitute.models import Article, Category
 
 
+logger = logging.getLogger(__name__)
+
+
 class Command(BaseCommand):
     help = 'Command to update database with openfoodfacts api data'
 
     def handle(self, *args, **options):
         date_begin = now()
-        logger = logging.getLogger(__name__)
         article_count_before = Article.objects.count()
         try:
             register_api_data_db(50, 100, 100)
