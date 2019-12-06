@@ -1,0 +1,9 @@
+export DJANGO_SETTINGS_MODULE='nutella.settings.production'
+sudo service postgresql restart
+pip install -r ocpizza/requirements.txt
+./manage.py collectstatic
+./manage.py makemigrations
+./manage.py migrate
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl restart all

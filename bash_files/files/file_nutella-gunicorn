@@ -1,0 +1,8 @@
+[program:nutella-gunicorn]
+environment = NEW_RELIC_CONFIG_FILE=/home/sandrinesuire/newrelic.ini,DJANGO_SETTINGS_MODULE="nutella.settings.production"
+command =/home/sandrinesuire/project_10/env/bin/newrelic-admin run-program /home/sandrinesuire/project_10/env/bin/gunicorn nutella.wsgi:application
+user = sandrinesuire
+directory = /home/sandrinesuire/project_10
+autostart = true
+autorestart = true
+

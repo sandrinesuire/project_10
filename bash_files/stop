@@ -1,0 +1,3 @@
+sudo service postgresql stop
+sudo supervisorctl stop
+sudo supervisorctl stop all

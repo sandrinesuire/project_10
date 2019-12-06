@@ -1,8 +1,6 @@
-import os
-
+import logging
 import openfoodfacts
 from django.core.management.base import BaseCommand
-
 from substitute import utils
 from substitute.models import Article, Category
 
@@ -12,8 +10,15 @@ class Command(BaseCommand):
     help = 'Command to update database with openfoodfacts api data'
 
     def handle(self, *args, **options):
-        register_api_data_db(50, 100, 100)
-        self.stdout.write('This was extremely simple!!!')
+        logger = logging.getLogger(__name__)
+        article_count_before = Article.objects.count()
+        try:
+            register_api_data_db(50, 100, 100)
+        except Exception as e:
+            logger.info(msg="{e}".format(e=e))
+        finally:
+            article_count_after = Article.objects.count()
+            logger.info(msg="{add} articles added".format(add=article_count_after-article_count_before))
 
 
 def register_api_data_db(categories_nb=20, product_number_by_category=200, max_page_by_category=200):

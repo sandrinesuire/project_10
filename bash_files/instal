@@ -1,0 +1,25 @@
+***************script_server_conf*****************
+**************************************************
+sudo apt-get update
+sudo apt-get install python3-pip python3-dev libpq-dev postgresql postgresql-contrib
+git clone https://github.com/sandrinesuire/project_10.git
+cd project_10
+sudo apt install virtualenv
+source env/bin/activate
+********************script_postgres****************
+***************************************************
+sudo apt-get install nginx
+sudo nano /etc/nginx/sites-availables/nutella
+********************coller file_nginx**************
+***************************************************
+cd /etc/nginx/sites-enabled
+ln -s ../sites-available/nutella
+sudo apt-get install supervisor
+pip install newrelic
+********recupèrer la licence key de newrelic********
+newrelic-admin generate-config YOUR__________LICENSE____________KEY newrelic.ini
+sudo nano /etc/supervisor/conf.d/nutella-gunicorn.conf
+********************coller file_nutella-gunicorn***
+***************************************************
+***************script_cron*************************
+***************************************************

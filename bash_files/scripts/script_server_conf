@@ -1,0 +1,21 @@
+$ ssh root@xxx.xxx.xxx.xxx
+root@ocpizza:~# adduser newuser
+Enter new UNIX password:
+Retype new UNIX password:
+Enter the new value, or press ENTER for the default
+    Full Name []: newuser
+    Room Number []:
+    Work Phone []:
+    Home Phone []:
+    Other []:
+Is the information correct? [Y/n] Y
+root@ocpizza:~# gpasswd -a newuser sudo
+root@ocpizza:~# su - newuser
+newuser@ocpizza:~$ mkdir .ssh
+newuser@ocpizza:~$ chmod 700 .ssh
+newuser@ocpizza:~$ vi .ssh/authorized_keys
+newuser@ocpizza:~$ chmod 600 .ssh/authorized_keys
+newuser@ocpizza:~/.ssh$ exit
+logout
+root@ocpizza:~# vi /etc/ssh/sshd_config    …… replace yes by no for PermitRootLogin no
+root@ocpizza:~# service ssh reload
