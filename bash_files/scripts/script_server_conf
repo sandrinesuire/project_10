@@ -1,5 +1,5 @@
 $ ssh root@xxx.xxx.xxx.xxx
-root@ocpizza:~# adduser newuser
+root@sandrinesuire:~# adduser newuser
 Enter new UNIX password:
 Retype new UNIX password:
 Enter the new value, or press ENTER for the default
@@ -9,13 +9,13 @@ Enter the new value, or press ENTER for the default
     Home Phone []:
     Other []:
 Is the information correct? [Y/n] Y
-root@ocpizza:~# gpasswd -a newuser sudo
-root@ocpizza:~# su - newuser
-newuser@ocpizza:~$ mkdir .ssh
-newuser@ocpizza:~$ chmod 700 .ssh
-newuser@ocpizza:~$ vi .ssh/authorized_keys
-newuser@ocpizza:~$ chmod 600 .ssh/authorized_keys
-newuser@ocpizza:~/.ssh$ exit
+root@sandrinesuire:~# gpasswd -a newuser sudo
+root@sandrinesuire:~# su - newuser
+newuser@sandrinesuire:~$ mkdir .ssh
+newuser@sandrinesuire:~$ chmod 700 .ssh
+newuser@sandrinesuire:~$ vi .ssh/authorized_keys
+newuser@sandrinesuire:~$ chmod 600 .ssh/authorized_keys
+newuser@sandrinesuire:~/.ssh$ exit
 logout
-root@ocpizza:~# vi /etc/ssh/sshd_config    …… replace yes by no for PermitRootLogin no
-root@ocpizza:~# service ssh reload
+root@sandrinesuire:~# vi /etc/ssh/sshd_config    …… replace yes by no for PermitRootLogin no
+root@sandrinesuire:~# service ssh reload

@@ -1,6 +1,6 @@
 export DJANGO_SETTINGS_MODULE='nutella.settings.production'
 sudo service postgresql restart
-pip install -r equirements.txt
+pip install -requirements.txt
 ./manage.py collectstatic
 ./manage.py makemigrations
 ./manage.py migrate
