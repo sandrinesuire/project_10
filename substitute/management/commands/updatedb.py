@@ -1,6 +1,8 @@
 import logging
 import openfoodfacts
 from django.core.management.base import BaseCommand
+from django.utils.timezone import now
+
 from substitute import utils
 from substitute.models import Article, Category
 
@@ -9,6 +11,7 @@ class Command(BaseCommand):
     help = 'Command to update database with openfoodfacts api data'
 
     def handle(self, *args, **options):
+        date_begin = now()
         logger = logging.getLogger(__name__)
         article_count_before = Article.objects.count()
         try:
@@ -16,8 +19,12 @@ class Command(BaseCommand):
         except Exception as e:
             logger.info(msg="{e}".format(e=e))
         finally:
+            date_end = now()
             article_count_after = Article.objects.count()
-            logger.info(msg="{add} articles added".format(add=article_count_after-article_count_before))
+            logger.info(msg="from {date_begin} to {date_end} : {add} articles added".format(
+                date_begin=date_begin,
+                date_end=date_end,
+                add=article_count_after-article_count_before))
 
 
 def register_api_data_db(categories_nb=20, product_number_by_category=200, max_page_by_category=200):
