@@ -27,7 +27,7 @@ class Command(BaseCommand):
                 add=article_count_after-article_count_before))
 
 
-def register_api_data_db(categories_nb=20, product_number_by_category=200, max_page_by_category=200):
+def register_api_data_db(categories_nb=25, product_number_by_category=10, max_page_by_category=1):
     """
     Method getting initial data from openfoodfacts api and storing them in database
     :return:
