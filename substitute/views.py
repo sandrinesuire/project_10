@@ -62,6 +62,7 @@ def log_in(request):
     :param request:
     :return:
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     if request.method == "POST" and 'register' in request.POST.get('form_url', ""):
         form = UserForm(request.POST or None)
         form_url = "register"
@@ -124,6 +125,7 @@ def logout(request):
     :param request:
     :return:
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     request.session['unlogged'] = None
     _logout(request)
     return redirect(reverse(search))
@@ -135,10 +137,9 @@ def search(request):
     :param request:
     :return: HttpResponse with message
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     form = SearchForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
-        user_ip = get_client_ip(request)
-        agent.add_custom_parameter('user_ip', user_ip)
         searching = form.cleaned_data["searching"]
         context = _search(searching)
         return render(request, 'substitute/results.html', context)
@@ -213,6 +214,7 @@ def results(request):
     :param request:
     :return: HttpResponse with message
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     context = {}
     if request.method == "POST":
         form = SubstituteRegisterForm(request.POST)
@@ -235,6 +237,7 @@ def detail(request, article_id):
     :param article_id: the article id
     :return:
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     article = get_object_or_404(Article, pk=article_id)
     context = {
         'stores': article.stores.all(),
@@ -267,6 +270,7 @@ def register_substitut(request):
     :param request:
     :return:
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     if request.method == "POST":
         form = SubstituteRegisterForm(request.POST)
         if form.is_valid():
@@ -310,6 +314,7 @@ def account(request):
     :param request:
     :return: HttpResponse with message
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     context = {'local_background': 'user',
                'masthead_content': request.user.username,
                'content_title': _("Here is your user profile :")
@@ -323,6 +328,7 @@ def legal(request):
     :param request:
     :return: HttpResponse with message
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     context = {
         "content_title": _("Legality : ")
     }
@@ -336,6 +342,7 @@ def mysubstitutes(request):
     :param request:
     :return: HttpResponse with message
     """
+    agent.add_custom_parameter('user_ip', get_client_ip(request))
     substitutes = ProfileSubstitute.objects.filter(profile__user=request.user)
     if substitutes:
         content_title = _("Here is the list of your substitutes :")
