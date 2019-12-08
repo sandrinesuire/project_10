@@ -277,7 +277,7 @@ def register_substitut(request):
         if form.is_valid():
             come_from = form.cleaned_data["come_from"]
             user_id = form.cleaned_data["user_id"]
-            agent.add_custom_parameter('user_ip', user_id)
+            agent.add_custom_parameter('user_id', user_id)
             searching = form.cleaned_data["searching"]
             article_id = form.cleaned_data["article_id"]
             profile = get_object_or_404(Profile, user__id=user_id)
