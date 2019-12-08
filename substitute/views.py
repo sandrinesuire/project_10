@@ -29,6 +29,7 @@ def cust_login_required(func):
         :return:
         """
         try:
+            agent.add_custom_parameter('user_ip', get_client_ip(request))
             if not request.session.get('unlogged', "") and not request.session.get('old_request'):
                 request.session['old_request'] = request.POST
             if isinstance(request.user, AnonymousUser):
@@ -276,6 +277,7 @@ def register_substitut(request):
         if form.is_valid():
             come_from = form.cleaned_data["come_from"]
             user_id = form.cleaned_data["user_id"]
+            agent.add_custom_parameter('user_ip', user_id)
             searching = form.cleaned_data["searching"]
             article_id = form.cleaned_data["article_id"]
             profile = get_object_or_404(Profile, user__id=user_id)
