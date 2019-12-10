@@ -1,0 +1,117 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Nutella</title>
+
+    <!-- Font Awesome Icons -->
+    <link href="{% static 'substitute/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Scope+One" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet">
+
+    <!-- Plugin CSS -->
+    <link href="{% static 'substitute/vendor/magnific-popup/magnific-popup.css' %}" rel="stylesheet">
+
+    <!-- Theme CSS - Includes Bootstrap -->
+    <link href="{% static 'substitute/css/creative.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'substitute/css/substitute.css' %}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body id="page-top">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="{% url 'search' %}"><img class="img-responsive"
+                                                                                 src="{% static 'substitute/img/logo_pur_beurre29.png' %}"
+                                                                                 alt="PurBeurre">{% trans " Pure Butter" %}</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto my-2 my-lg-0">
+                <li class="nav-item">
+                    <form class="form-inline" method="post" action="{% url 'search' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <input type="text" name="searching" id="searching" placeholder="{% trans 'search' %}" title="{% trans 'search a substitute' %}"/>
+                        </div>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="{% url 'account' %}"><i class="fas fa-user fa-2x fa-fw"
+                                                                                        title="{% trans 'My account' %}"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="{% url 'mysubstitutes' %}"><i
+                            class="fas fa-carrot fa-2x fa-fw" title="{% trans 'My substitutes' %}"></i></a>
+                </li>
+
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}"><i
+                                class="fas fa-sign-out-alt fa-2x fa-fw" title="{% trans 'Logout' %}"></i></a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="{% url 'log_in' %}"><i
+                                class="fas fa-sign-in-alt fa-2x fa-fw" title="{% trans 'Create an account/Signup'%}""></i></a>
+                    </li>
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="section-page h-100">
+    <div class="h-97">
+        {% block head_n_content %}{% endblock %}
+    </div>
+    <!-- Footer -->
+
+    <footer class="bg-light pt-3">
+        <div class="h-3">
+            <div class="row">
+                <div class="col-6 small text-center"><a href="{% url 'legal' %}">Copyright &copy; 2019 -
+                    Start Bootstrap</a></div>
+                <div class="col-6 small text-center"><a href="{% url 'search' %}#contact">Contact</a></div>
+            </div>
+
+
+        </div>
+    </footer>
+</div>
+</div>
+
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'substitute/vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'substitute/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- Plugin JavaScript -->
+<script src="{% static 'substitute/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'substitute/vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+
+<!-- Custom scripts for this template -->
+<script src="{% static 'substitute/js/creative.min.js' %}"></script>
+</body>
+
+</html>

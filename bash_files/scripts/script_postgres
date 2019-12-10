@@ -1,0 +1,7 @@
+sudo -u postgres psql
+CREATE DATABASE nutella;
+CREATE USER sandrine WITH PASSWORD 'sandrine_password';
+ALTER ROLE sandrine SET client_encoding TO 'utf8';
+ALTER ROLE sandrine SET default_transaction_isolation TO 'read committed';
+ALTER ROLE sandrine SET timezone TO 'Europe/Paris';
+GRANT ALL PRIVILEGES ON DATABASE nutella TO sandrine;

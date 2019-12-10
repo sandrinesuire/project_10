@@ -1,0 +1,17 @@
+from . import *
+
+# = '51m^$e/00 =jN`AQF;q*O *R'
+# SECRET_KEY = '+wgbpb9yvdc@3z-)2m9=dyyvigm8px$(d=j-_y+kn45h)u8h95'
+DEBUG = False
+ALLOWED_HOSTS = ['209.97.190.27', 'thebestsubstitute.herokuapp.com']
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql', # on utilise l'adaptateur postgresql
+        'NAME': 'nutella', # le nom de notre base de données créée précédemment
+        'USER': 'sandrine', # attention : remplacez par votre nom d'utilisateur !!
+        'PASSWORD': 'sandrine',
+        'HOST': '',
+        'PORT': '5432',
+    }
+}
