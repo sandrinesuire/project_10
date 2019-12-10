@@ -5,3 +5,4 @@ substitute/migrations/__pycache__/
 nutella/settings/production.py
 nutella/staticfiles/
 openfoodfacts-python
+.idea
