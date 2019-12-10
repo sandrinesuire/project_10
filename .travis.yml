@@ -1,0 +1,22 @@
+language: python
+python:
+  - '3.6.8'
+
+# safelist
+branches:
+  only:
+    - master
+
+install: pip install -r requirements.txt
+
+before_script:
+  - pip install git+https://github.com/openfoodfacts/openfoodfacts-python
+
+services:
+  - postgresql
+
+env: DJANGO_SETTINGS_MODULE=nutella.settings.travis
+
+script:
+  - ./manage.py test
+

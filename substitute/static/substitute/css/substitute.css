@@ -1,0 +1,103 @@
+*, #mainNav .navbar-brand, input, button {
+    font-family: "Open Sans", sans-serif;
+    text-transform: none;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: "Scope One", sans-serif;
+    text-transform: none;
+}
+
+.bg-dark {
+    background-color: #C45525!important;
+}
+
+.tb {
+    border: 1px solid #dee2e6 !important;
+
+  }
+.tbm {
+    border: 1px solid #dee2e6 !important;
+    padding-left:20px;
+  }
+
+.super_img {
+    position: relative;
+    z-index: 1;
+}
+img.article, .img-fluid {
+    position: relative;
+    height:20vh;
+    z-index: 2;
+}
+img.grade{
+    position: absolute;
+    top:-10px;
+    margin-left:-20px;
+    z-index: 3;
+}
+
+.border-rbl {
+  border-right: 1px solid #dee2e6 !important;
+  border-bottom: 1px solid #dee2e6 !important;
+  border-left: 1px solid #dee2e6 !important;
+}
+
+header.min_masthead {
+  padding-top: 10rem;
+  padding-bottom: calc(10rem - 72px);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(92, 77, 66, 0.8)), to(rgba(92, 77, 66, 0.8))), url("../img/bg-masthead.jpg");
+  background: linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%), url("../img/bg-masthead.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
+}
+
+
+header.min_masthead h1 {
+  font-size: 2.25rem;
+}
+
+@media (min-width: 992px) {
+  header.min_masthead {
+
+      padding-top: 72px;
+      padding-bottom: 0;
+  }
+  header.min_masthead p, header.min_masthead p {
+    font-size: 1.15rem;
+  }
+  header.min_masthead h1, header.min_masthead h1 {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  header.min_masthead h1, header.min_masthead h1 {
+    font-size: 3.5rem;
+  }
+}
+
+.h-3 {
+  height: 3% !important;
+}
+.h-90 {
+    height: 90% !important;
+}
+
+.mb-6 {
+  margin-bottom: 6rem !important;
+}
+
+
+
+footer {
+    position: fixed;
+    height: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
+    z-index: 4;
+}
+
