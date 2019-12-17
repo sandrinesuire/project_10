@@ -58,26 +58,6 @@ class SearchingPageTestCase(TestCase):
             response = valid_product(invalid_1)
             self.assertFalse(response)
 
-    def test_searching_page(self):
-        """
-        Test search input
-        :return:
-        """
-        register_api_data_db(2, 20, 20)
-        article = Article.objects.first()
-        if article:
-            # search existing article
-            response = self.client.post(reverse('search'), {
-                'searching': article.product_name
-            })
-            self.assertEqual(response.status_code, 200)
-
-        # search not existing article
-        response = self.client.post(reverse('search'), {
-            'searching': "la tête à toto"
-        })
-        self.assertEqual(response.status_code, 200)
-
     def test_register_substitute_and_consult(self):
         """
         Test register substitute and consult
@@ -178,3 +158,25 @@ class SearchingPageTestCase(TestCase):
         self.assertIsNone(self.client.session.get('_auth_user_id'))
         response = self.client.post(reverse('account'))
         self.assertEqual(response.templates[0].name, "substitute/register.html")
+
+    def test_searching_page(self):
+        """
+        Test search input
+        :return:
+        """
+        register_api_data_db(2, 20, 20)
+        article = Article.objects.first()
+        if article:
+            # search existing article
+            response = self.client.post(reverse('search'), {
+                'searching': article.product_name
+            })
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context[0].dicts[3]["searched_article"], article)
+
+        # search not existing article
+        response = self.client.post(reverse('search'), {
+            'searchinng': "la tête à toto"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.context[0].dicts[3]["searched_article"])
