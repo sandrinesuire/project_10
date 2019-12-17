@@ -35,49 +35,57 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
     <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="{% url 'search' %}"><img class="img-responsive"
-                                                                                 src="{% static 'substitute/img/logo_pur_beurre29.png' %}"
-                                                                                 alt="PurBeurre">{% trans " Pure Butter" %}</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto my-2 my-lg-0">
-                <li class="nav-item">
-                    <form class="form-inline" method="post" action="{% url 'search' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            {% csrf_token %}
-                            <input type="text" name="searching" id="searching" placeholder="{% trans 'search' %}" title="{% trans 'search a substitute' %}"/>
-                        </div>
-                    </form>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link js-scroll-trigger" href="{% url 'account' %}"><i class="fas fa-user fa-2x fa-fw"
-                                                                                        title="{% trans 'My account' %}"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link js-scroll-trigger" href="{% url 'mysubstitutes' %}"><i
-                            class="fas fa-carrot fa-2x fa-fw" title="{% trans 'My substitutes' %}"></i></a>
-                </li>
+        <div class="row">
+            <a class="navbar-brand js-scroll-trigger" href="{% url 'search' %}"><img class="img-responsive"
+                                                                                     src="{% static 'substitute/img/logo_pur_beurre29.png' %}"
+                                                                                     alt="PurBeurre">{% trans " Pure Butter" %}
+            </a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                    data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
 
-                {% if user.is_authenticated %}
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto my-2 my-lg-0">
+
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}"><i
-                                class="fas fa-sign-out-alt fa-2x fa-fw" title="{% trans 'Logout' %}"></i></a>
+                        <a class="nav-link js-scroll-trigger" href="{% url 'account' %}"><i
+                                class="fas fa-user fa-2x fa-fw"
+                                title="{% trans 'My account' %}"></i></a>
                     </li>
-                {% else %}
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="{% url 'log_in' %}"><i
-                                class="fas fa-sign-in-alt fa-2x fa-fw" title="{% trans 'Create an account/Signup'%}""></i></a>
+                        <a class="nav-link js-scroll-trigger" href="{% url 'mysubstitutes' %}"><i
+                                class="fas fa-carrot fa-2x fa-fw" title="{% trans 'My substitutes' %}"></i></a>
                     </li>
-                {% endif %}
 
 
-            </ul>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link js-scroll-trigger" href="{% url 'logout' %}"><i
+                                    class="fas fa-sign-out-alt fa-2x fa-fw" title="{% trans 'Logout' %}"></i></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link js-scroll-trigger" href="{% url 'log_in' %}"><i
+                                    class="fas fa-sign-in-alt fa-2x fa-fw"
+                                    title="{% trans 'Create an account/Signup' %}""></i></a>
+                        </li>
+                    {% endif %}
+
+
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <form id="search_form" class="form-inline" method="post" action="{% url 'search' %}">
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{ form_search.as_p }}
+                    <input class="mt-2" type="submit"/>
+                </div>
+            </form>
         </div>
     </div>
 </nav>
@@ -112,6 +120,10 @@
 
 <!-- Custom scripts for this template -->
 <script src="{% static 'substitute/js/creative.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+{{ form_search.media }}
 </body>
 
 </html>

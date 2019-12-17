@@ -2,6 +2,9 @@
     font-family: "Open Sans", sans-serif;
     text-transform: none;
 }
+input, button, .select2-selection{
+    margin: 0 6px 0 6px;
+}
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: "Scope One", sans-serif;
     text-transform: none;

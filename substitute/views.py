@@ -1,7 +1,7 @@
 """
 Views
 """
-
+from dal import autocomplete
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.auth.models import User, AnonymousUser
@@ -13,7 +13,7 @@ from django.urls import reverse
 from newrelic import agent
 
 from substitute.forms import UserForm, LoginForm, SearchForm, SubstituteRegisterForm
-from substitute.models import Profile, Article, ProfileSubstitute
+from substitute.models import Profile, Article, ProfileSubstitute, Category
 
 
 def cust_login_required(func):
@@ -65,12 +65,12 @@ def log_in(request):
     """
     agent.add_custom_parameter('user_ip', get_client_ip(request))
     if request.method == "POST" and 'register' in request.POST.get('form_url', ""):
-        form = UserForm(request.POST or None)
+        form_user = UserForm(request.POST or None)
         form_url = "register"
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            email = form.cleaned_data["email"]
-            password = form.cleaned_data["password"]
+        if form_user.is_valid():
+            username = form_user.cleaned_data["username"]
+            email = form_user.cleaned_data["email"]
+            password = form_user.cleaned_data["password"]
             try:
                 user = User.objects.create_user(username, email, password)
             except IntegrityError:
@@ -90,18 +90,18 @@ def log_in(request):
                 return redirect(log_in)
         elif request.session.get('unlogged', '') == "second":
             request.session['unlogged'] = "third"
-            return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
+            return render(request, 'substitute/register.html', {'form_user': form_user, 'form_url': form_url})
         elif not request.session.get('unlogged'):
-            return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
+            return render(request, 'substitute/register.html', {'form_user': form_user, 'form_url': form_url})
     else:
-        form = LoginForm(request.POST or None)
+        form_user = LoginForm(request.POST or None)
         form_url = "log_in"
         if request.method == "POST":
-            form = LoginForm(request.POST)
+            form_user = LoginForm(request.POST)
 
-            if form.is_valid():
-                username = form.cleaned_data["username"]
-                password = form.cleaned_data["password"]
+            if form_user.is_valid():
+                username = form_user.cleaned_data["username"]
+                password = form_user.cleaned_data["password"]
                 user = authenticate(username=username, password=password)
                 if user:  # Si l'objet renvoyé n'est pas None
                     login(request, user)  # nous connectons l'utilisateur
@@ -115,9 +115,9 @@ def log_in(request):
                     messages.error(request, _('Impossible to create user with these data'))
                     return redirect(log_in)
             elif request.session.get('unlogged', '') == "second":
-                return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
+                return render(request, 'substitute/register.html', {'form_user': form_user, 'form_url': form_url})
         else:
-            return render(request, 'substitute/register.html', {'form': form, 'form_url': form_url})
+            return render(request, 'substitute/register.html', {'form_user': form_user, 'form_url': form_url})
 
 
 def logout(request):
@@ -139,13 +139,16 @@ def search(request):
     :return: HttpResponse with message
     """
     agent.add_custom_parameter('user_ip', get_client_ip(request))
-    form = SearchForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        searching = form.cleaned_data["searching"]
-        context = _search(searching)
+    form_search = SearchForm(request.POST or None)
+    if request.method == "POST" and form_search.is_valid():
+        searching = form_search.cleaned_data["searching"]
+        category = form_search.cleaned_data["category"]
+        nutriscore = form_search.cleaned_data["nutriscore"]
+        context = _search(searching, category, nutriscore)
+        context["form_search"] = form_search
         return render(request, 'substitute/results.html', context)
 
-    return render(request, 'substitute/search.html', {'form': form})
+    return render(request, 'substitute/search.html', {'form_search': form_search})
 
 
 def get_client_ip(request):
@@ -157,48 +160,62 @@ def get_client_ip(request):
     return ip
 
 
-def _search(searching):
+def _search(searching, category, nutriscore):
     """
     Method private for search article in database
     :param searching: the searching name
+    :param category: the category name
+    :param nutriscore: the nutriscore name
     :return: the context for searching view
     """
-    first = searching
-    second = ' ' + searching + ' '
-    third = ' ' + searching
-    fourth = searching + '.'
-    fifth = searching + ' '
-    sixth = ' ' + searching
-    results = Article.objects.filter(product_name__icontains=first)
+    results = Article.objects.all()
     initial_search = ""
-    if not results:
-        results = Article.objects.filter(Q(product_name__contains=second) | Q(product_name__contains=third) |
-                                        Q(product_name__istartswith=fourth) | Q(product_name__istartswith=fifth) |
-                                        Q(product_name__iendswith=sixth))
+    if searching:
+        first = searching
+        second = ' ' + searching + ' '
+        third = ' ' + searching
+        fourth = searching + '.'
+        fifth = searching + ' '
+        sixth = ' ' + searching
+
+        results = results.filter(product_name__icontains=first)
+        if not results:
+            results = Article.objects.filter(Q(product_name__contains=second) | Q(product_name__contains=third) |
+                                            Q(product_name__istartswith=fourth) | Q(product_name__istartswith=fifth) |
+                                            Q(product_name__iendswith=sixth))
+    if nutriscore:
+        results = results.filter(nutrition_grades=nutriscore)
+    if category:
+        results =results.filter(categories__name=category.name)
     for result in results:
         initial_search += result.product_name + ", "
     content_title = _("No article can substitute your search.")
     results = Article.filter_best_article(results) if results else None
-    if results and results.count() > 0:
+
+    searched_article = None
+    articles = None
+    content_title = _("This article not exist.")
+    masthead_content = searching
+    image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
+                "twBvkuRWej2Up8zYxgFx-"
+
+    if searching and results and results.count() > 0:
         searched_article = results[0]
+        masthead_content = searched_article.product_name
         image_url = searched_article.image_url
-        articles = searched_article.get_article_substitutes_from_bd()
+        articles = searched_article.get_article_substitutes_from_bd(category, nutriscore)
         if not articles:
             articles = results[1:]
-        # return only the first twelve articles
-        if articles:
-            content_title = _("You can substitute this product with : ")
-            articles = articles[:12]
-            articles.sort(key=lambda x: [x.my_grade, x.ingredients_number, x.keywords_number],
-                          reverse=True)
-        masthead_content = searched_article.product_name
     else:
-        searched_article = None
-        articles = None
-        content_title = _("This article not exist.")
-        masthead_content = searching
-        image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
-                    "twBvkuRWej2Up8zYxgFx-"
+        articles = results
+    # return only the first twelve articles
+    if articles:
+        content_title = _("You can substitute this product with : ")
+        articles = articles[:12]
+        articles.sort(key=lambda x: [x.my_grade, x.ingredients_number, x.keywords_number],
+                      reverse=True)
+
+
     return {
         'searched_article': searched_article,
         'articles': articles,
@@ -221,12 +238,12 @@ def results(request):
         form = SubstituteRegisterForm(request.POST)
         if form.is_valid():
             user_id = form.cleaned_data["user_id"]
-            searching = form.cleaned_data["searching"]
+            searching_s = form.cleaned_data["searching_s"]
             article_id = form.cleaned_data["article_id"]
             profile = get_object_or_404(Profile, user__id=user_id)
             article = get_object_or_404(Article, id=article_id)
             ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
-            context = _search(searching)
+            context = _search(searching_s)
             context["message"] = 'Your substitute has been registred successfully!'
     return render(request, 'substitute/results.html', context)
 
@@ -278,14 +295,14 @@ def register_substitut(request):
             come_from = form.cleaned_data["come_from"]
             user_id = form.cleaned_data["user_id"]
             agent.add_custom_parameter('user_id', user_id)
-            searching = form.cleaned_data["searching"]
+            searching_s = form.cleaned_data["searching_s"]
             article_id = form.cleaned_data["article_id"]
             profile = get_object_or_404(Profile, user__id=user_id)
             article = get_object_or_404(Article, id=article_id)
             ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
 
             if come_from == "results":
-                context = _search(searching)
+                context = _search(searching_s)
 
             elif come_from == "detail":
                 context = {
@@ -357,3 +374,22 @@ def mysubstitutes(request):
         'content_title': content_title
     }
     return render(request, 'substitute/mysubstitutes.html', context)
+
+
+class CategoryAutocomplete(autocomplete.Select2QuerySetView):
+    """
+    Class for auto complete category
+    """
+    model = Category
+
+    def get_queryset(self):
+        """
+        Methoe returning queryset
+        """
+        qs = Category.objects.all()
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+        return qs
+
+    # def get_result_label(self, item):
+    #     return item.name

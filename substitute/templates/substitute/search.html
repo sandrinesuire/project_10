@@ -11,13 +11,6 @@
         <div class="align-self-baseline">
           <h2 class="text-white-75 font-weight-light mb-5">{% trans 'Find a substitute for those you eat every day.' %}</h2>
         </div>
-        <div class="align-self-baseline">
-          <form class="form-check-inline text-center my-2 my-lg-0" method="post" action="{% url 'search' %}">
-              {% csrf_token %}
-            <input class="form-control mr-0" type="text" name="searching" value="" id="searching" placeholder="{% trans 'search' %}" title="{% trans 'search a substitute' %}" aria-label="{% trans 'product' %}">
-          <button class="form-control my-2 my-sm-0" type="submit">{% trans 'Search' %}</button>
-        </form>
-        </div>
 
 {%  endblock %}
 

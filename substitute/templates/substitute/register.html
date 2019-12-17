@@ -6,7 +6,7 @@
         <div class="text-white m-5 p-5">
             <form class="text-right" method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {{ form_user.as_p }}
                 <input type="hidden" name="form_url" value={{ form_url }}/>
                 <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
             </form>

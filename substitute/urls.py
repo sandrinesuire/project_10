@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^legal$', views.legal, name='legal'),
     url(r'^results', views.results, name='results'),
     url(r'^mysubstitutes', views.mysubstitutes, name='mysubstitutes'),
+    url(r'^category-autocomplete/$', views.CategoryAutocomplete.as_view(), name='category-autocomplete', ),
 ]

@@ -22,6 +22,8 @@ SECRET_KEY = '+wgbpb9yvdc@3z-)2m9=dyyvigm8px$(d=j-_y+kn45h)u8h95'
 ALLOWED_HOSTS = ['127.0.0.1']
 
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

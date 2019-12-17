@@ -48,6 +48,9 @@ class Category(models.Model):
         """
         ordering = ['id']
 
+    def __str__(self):
+        return "{0}".format(self.name)
+
 
 class Store(models.Model):
     """
@@ -153,13 +156,16 @@ class Article(models.Model):
         """
         ordering = ['id']
 
-    def get_article_substitutes_from_bd(self):
+    def get_article_substitutes_from_bd(self, category, nutriscore):
         """
         Method returning a list of articles could substitute the self searched_article from data_base
+        :param category: search category
+        :param nutriscore: search nutriscore
         :return: list of Article object
         """
-        category = self.categories.all()[0]
-        substitutes = category.articles.all()
+        category = self.categories.all()[0] if not category else category
+        substitutes = category.articles.all().filter(nutrition_grades=nutriscore) if nutriscore else \
+            category.articles.all()
         substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes)
 
         return substitutes
