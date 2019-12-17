@@ -165,6 +165,55 @@ class SearchingPageTestCase(TestCase):
         :return:
         """
         register_api_data_db(2, 20, 20)
+
+        # test get, put, patch, delete : request return form data
+        data = {}
+        response = self.client.get(reverse('search'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context[0].dicts[3]['form'].data, data)
+        self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
+
+        response = self.client.put(reverse('search'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context[0].dicts[3]['form'].data, data)
+        self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
+
+        response = self.client.patch(reverse('search'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context[0].dicts[3]['form'].data, data)
+        self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
+
+        response = self.client.delete(reverse('search'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context[0].dicts[3]['form'].data, data)
+        self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
+
+        # search with not valid form, key of data not existing in form model: request return form data
+        data = {
+            'searchinng': "la tête à toto"
+        }
+        response = self.client.post(reverse('search'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(data['searchinng'], response.context[0].dicts[3]['form'].data["searchinng"])
+        self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
+
+        # test post search with empty searching value : request return empty form data
+        data = {
+            'searching': ""
+        }
+        response = self.client.post(reverse('search'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(data['searching'], response.context[0].dicts[3]['form'].data["searching"])
+        self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
+
+        # search not existing article : response return content_title "Cet article n'existe pas."
+        response = self.client.post(reverse('search'), {
+            'searching': "la tête à toto"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.context[0].dicts[3]["searched_article"])
+        self.assertEqual("Cet article n'existe pas.", response.context[0].dicts[3]["content_title"])
+
         article = Article.objects.first()
         if article:
             # search existing article
@@ -173,10 +222,3 @@ class SearchingPageTestCase(TestCase):
             })
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.context[0].dicts[3]["searched_article"], article)
-
-        # search not existing article
-        response = self.client.post(reverse('search'), {
-            'searchinng': "la tête à toto"
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertIsNone(response.context[0].dicts[3]["searched_article"])
