@@ -3,7 +3,7 @@
     text-transform: none;
 }
 input, button, .select2-selection{
-    margin: 0 6px 0 6px;
+    margin: 0 1em 0 1em;
 }
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: "Scope One", sans-serif;
@@ -91,7 +91,6 @@ header.min_masthead h1 {
 .mb-6 {
   margin-bottom: 6rem !important;
 }
-
 
 
 footer {
