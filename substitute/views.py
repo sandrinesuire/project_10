@@ -146,6 +146,8 @@ def search(request):
         nutriscore = form_search.cleaned_data["nutriscore"]
         context = _search(searching, category, nutriscore)
         context["form_search"] = form_search
+        context["category"] = category
+        context["nutriscore"] = nutriscore
         return render(request, 'substitute/results.html', context)
 
     return render(request, 'substitute/search.html', {'form_search': form_search})
@@ -296,13 +298,15 @@ def register_substitut(request):
             user_id = form.cleaned_data["user_id"]
             agent.add_custom_parameter('user_id', user_id)
             searching_s = form.cleaned_data["searching_s"]
+            category = form.cleaned_data["category"]
+            nutriscore = form.cleaned_data["nutriscore"]
             article_id = form.cleaned_data["article_id"]
             profile = get_object_or_404(Profile, user__id=user_id)
             article = get_object_or_404(Article, id=article_id)
             ProfileSubstitute.objects.get_or_create(profile=profile, article=article)
 
             if come_from == "results":
-                context = _search(searching_s)
+                context = _search(searching_s, category, nutriscore)
 
             elif come_from == "detail":
                 context = {

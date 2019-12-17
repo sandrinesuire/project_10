@@ -63,6 +63,8 @@ class SubstituteRegisterForm(forms.Form):
     substitute register form
     """
     come_from = forms.CharField(max_length=100)
-    searching = forms.CharField(max_length=100)
+    searching_s = forms.CharField(max_length=100)
+    category = forms.CharField(max_length=100, required=False)
+    nutriscore = forms.CharField(max_length=100, required=False)
     user_id = forms.IntegerField()
     article_id = forms.IntegerField()

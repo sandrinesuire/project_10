@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from substitute.management.commands.updatedb import register_api_data_db, valid_product
-from substitute.models import Article, Profile, ProfileSubstitute
+from substitute.models import Article, Profile, ProfileSubstitute, Category
 
 
 class SearchingPageTestCase(TestCase):
@@ -81,7 +81,7 @@ class SearchingPageTestCase(TestCase):
 
         data = {
             "user_id": user.id,
-            "searching": article.product_name,
+            "searching_s": article.product_name,
             "article_id": article.id,
             "come_from": "results"
         }
@@ -170,49 +170,48 @@ class SearchingPageTestCase(TestCase):
         data = {}
         response = self.client.get(reverse('search'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context[0].dicts[3]['form'].data, data)
+        self.assertEqual(response.context[0].dicts[3]['form_search'].data, data)
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
         response = self.client.put(reverse('search'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context[0].dicts[3]['form'].data, data)
+        self.assertEqual(response.context[0].dicts[3]['form_search'].data, data)
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
         response = self.client.patch(reverse('search'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context[0].dicts[3]['form'].data, data)
+        self.assertEqual(response.context[0].dicts[3]['form_search'].data, data)
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
         response = self.client.delete(reverse('search'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context[0].dicts[3]['form'].data, data)
+        self.assertEqual(response.context[0].dicts[3]['form_search'].data, data)
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
-        # search with not valid form, key of data not existing in form model: request return form data
+        # search with not valid form_search, key of data not existing in form_search model: request return form_search data
         data = {
             'searchinng': "la tête à toto"
         }
         response = self.client.post(reverse('search'), data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(data['searchinng'], response.context[0].dicts[3]['form'].data["searchinng"])
+        self.assertIn(data['searchinng'], response.context[0].dicts[3]['form_search'].data["searchinng"])
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
-        # test post search with empty searching value : request return empty form data
+        # test post search with empty searching value : request return empty form_search data
         data = {
             'searching': ""
         }
         response = self.client.post(reverse('search'), data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(data['searching'], response.context[0].dicts[3]['form'].data["searching"])
+        self.assertIn(data['searching'], response.context[0].dicts[3]['form_search'].data["searching"])
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
-        # search not existing article : response return content_title "Cet article n'existe pas."
+        # search not existing article
         response = self.client.post(reverse('search'), {
             'searching': "la tête à toto"
         })
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(response.context[0].dicts[3]["searched_article"])
-        self.assertEqual("Cet article n'existe pas.", response.context[0].dicts[3]["content_title"])
 
         article = Article.objects.first()
         if article:
@@ -222,3 +221,26 @@ class SearchingPageTestCase(TestCase):
             })
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.context[0].dicts[3]["searched_article"], article)
+
+    def test_filtering(self):
+        """
+        Test filtering input
+        :return:
+        """
+        register_api_data_db(2, 20, 20)
+
+        category_from_db = Category.objects.first()
+        article = category_from_db.articles.first()
+        nutriscore_from_db = article.nutrition_grades
+
+        if article:
+            # search existing article
+            response = self.client.post(reverse('search'), {
+                'searching': article.product_name,
+                'category': category_from_db.id,
+                'nutriscore': nutriscore_from_db
+            })
+            self.assertEqual(response.status_code, 200)
+            for substitute in response.context[0].dicts[3]["articles"]:
+                self.assertEqual(substitute.nutrition_grades, nutriscore_from_db)
+                self.assertIn(category_from_db, substitute.categories.all())
