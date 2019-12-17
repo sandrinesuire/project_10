@@ -43,7 +43,7 @@
                             {% csrf_token %}
                             {{ form.as_p }}
                             <input type="hidden" name="come_from" value="results"/>
-                            <input type="hidden" name="category" value="{{ category }}"/>
+                            <input type="hidden" name="category" value="{{ category.id }}"/>
                             <input type="hidden" name="nutriscore" value="{{ nutriscore }}"/>
                             <input type="hidden" name="user_id" value="{{ user.id }}"/>
                             <input type="hidden" name="article_id" value="{{ article.id }}"/>

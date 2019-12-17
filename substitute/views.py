@@ -298,7 +298,8 @@ def register_substitut(request):
             user_id = form.cleaned_data["user_id"]
             agent.add_custom_parameter('user_id', user_id)
             searching_s = form.cleaned_data["searching_s"]
-            category = form.cleaned_data["category"]
+            category_id = form.cleaned_data["category"]
+            category = Category.objects.filter(id=category_id)[0] if category_id else None
             nutriscore = form.cleaned_data["nutriscore"]
             article_id = form.cleaned_data["article_id"]
             profile = get_object_or_404(Profile, user__id=user_id)
