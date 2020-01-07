@@ -35,19 +35,26 @@ NUTRI_CHOICES = (
 
 class SearchForm(forms.Form):
     """
-    Search form
+    Search substitute form
     """
     category = forms.ModelChoiceField(
         label=_("Categorie"),
         queryset=Category.objects.all(),
         required=False,
-        widget=autocomplete.ModelSelect2(url='category-autocomplete', attrs={'onchange': 'search_form.submit();'})
+        widget=autocomplete.ModelSelect2(
+            url='category-autocomplete',
+            attrs={'onchange': 'search_form.submit();'}
+        )
     )
     nutriscore = forms.ChoiceField(
         choices=NUTRI_CHOICES,
         label=_("Nutriscore"),
         required=False,
-        widget=forms.Select(attrs={'style': 'width:100%', 'class': 'form-group', 'onchange': 'search_form.submit();'})
+        widget=forms.Select(
+            attrs={
+                'style': 'width:100%', 'class': 'form-group', 'onchange': 'search_form.submit();'
+            }
+        )
     )
     searching = forms.CharField(
         label=_("search a substitute"),

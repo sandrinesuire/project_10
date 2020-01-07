@@ -37,10 +37,12 @@ def cust_login_required(func):
                     request.session['unlogged'] = "second"
                     request.method = None
                     return log_in(request)
-                elif request.session.get('unlogged', "") == "second" and 'register' in request.POST.get('form_url', ""):
+                elif request.session.get('unlogged', "") == "second" and 'register' in \
+                        request.POST.get('form_url', ""):
                     return log_in(request)
-                elif request.session.get('unlogged', "") == "third" or (request.session.get(
-                        'unlogged', "") == "second" and 'log_in' in request.POST.get('form_url', "")):
+                elif request.session.get('unlogged', "") == "third" or (
+                        request.session.get('unlogged', "") == "second" and 'log_in' in
+                        request.POST.get('form_url', "")):
                     log_in(request)
             request.POST = request.session.get('old_request')
             if request.session.get('old_request'):
@@ -77,7 +79,7 @@ def log_in(request):
                 messages.error(request, _('Impossible to create user with these data'))
                 return redirect(log_in)
             profile = Profile.objects.create(user=user)
-            if profile:  # Si l'objet renvoyé n'est pas None
+            if profile:  # if returned object is not None
                 login(request, user)  # nous connectons l'utilisateur
                 if request.session.get('unlogged'):
                     request.session['unlogged'] = None
@@ -90,9 +92,11 @@ def log_in(request):
                 return redirect(log_in)
         elif request.session.get('unlogged', '') == "second":
             request.session['unlogged'] = "third"
-            return render(request, 'substitute/register.html', {'form_user': form_user, 'form_url': form_url})
+            return render(request, 'substitute/register.html',
+                          {'form_user': form_user, 'form_url': form_url})
         elif not request.session.get('unlogged'):
-            return render(request, 'substitute/register.html', {'form_user': form_user, 'form_url': form_url})
+            return render(request, 'substitute/register.html',
+                          {'form_user': form_user, 'form_url': form_url})
     else:
         form_user = LoginForm(request.POST or None)
         form_url = "log_in"
@@ -103,8 +107,8 @@ def log_in(request):
                 username = form_user.cleaned_data["username"]
                 password = form_user.cleaned_data["password"]
                 user = authenticate(username=username, password=password)
-                if user:  # Si l'objet renvoyé n'est pas None
-                    login(request, user)  # nous connectons l'utilisateur
+                if user:  # if returned object is not None
+                    login(request, user)  # connecting user
                     if request.session.get('unlogged'):
                         request.session['unlogged'] = None
                     if request.session.get('old_request'):
@@ -115,9 +119,11 @@ def log_in(request):
                     messages.error(request, _('Impossible to create user with these data'))
                     return redirect(log_in)
             elif request.session.get('unlogged', '') == "second":
-                return render(request, 'substitute/register.html', {'form_user': form_user, 'form_url': form_url})
+                return render(request, 'substitute/register.html',
+                              {'form_user': form_user, 'form_url': form_url})
         else:
-            return render(request, 'substitute/register.html', {'form_user': form_user, 'form_url': form_url})
+            return render(request, 'substitute/register.html',
+                          {'form_user': form_user, 'form_url': form_url})
 
 
 def logout(request):
@@ -134,7 +140,7 @@ def logout(request):
 
 def search(request):
     """
-    View for search a substitute
+    View for searching a substitute
     :param request:
     :return: HttpResponse with message
     """
@@ -154,15 +160,20 @@ def search(request):
 
 
 def get_client_ip(request):
+    """
+    Method to transmit user ip to new relic
+    :param request:
+    :return:
+    """
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+        ip_client = x_forwarded_for.split(',')[0]
     else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+        ip_client = request.META.get('REMOTE_ADDR')
+    return ip_client
 
 
-def _search(searching, category, nutriscore):
+def _search(searching, category=None, nutriscore=None):
     """
     Method private for search article in database
     :param searching: the searching name
@@ -170,7 +181,7 @@ def _search(searching, category, nutriscore):
     :param nutriscore: the nutriscore name
     :return: the context for searching view
     """
-    results = Article.objects.all()
+    substitutes = Article.objects.all()
     initial_search = ""
     if searching:
         first = searching
@@ -180,43 +191,41 @@ def _search(searching, category, nutriscore):
         fifth = searching + ' '
         sixth = ' ' + searching
 
-        results = results.filter(product_name__icontains=first)
-        if not results:
-            results = Article.objects.filter(Q(product_name__contains=second) | Q(product_name__contains=third) |
-                                            Q(product_name__istartswith=fourth) | Q(product_name__istartswith=fifth) |
-                                            Q(product_name__iendswith=sixth))
+        substitutes = substitutes.filter(product_name__icontains=first)
+        if not substitutes:
+            substitutes = Article.objects.filter(Q(product_name__contains=second) |
+                                                 Q(product_name__contains=third) |
+                                                 Q(product_name__istartswith=fourth) |
+                                                 Q(product_name__istartswith=fifth) |
+                                                 Q(product_name__iendswith=sixth))
     if nutriscore:
-        results = results.filter(nutrition_grades=nutriscore)
+        substitutes = substitutes.filter(nutrition_grades=nutriscore)
     if category:
-        results =results.filter(categories__name=category.name)
-    for result in results:
-        initial_search += result.product_name + ", "
-    content_title = _("No article can substitute your search.")
-    results = Article.filter_best_article(results) if results else None
-
+        substitutes = substitutes.filter(categories__name=category.name)
+    for substitute in substitutes:
+        initial_search += substitute.product_name + ", "
+    substitutes = Article.filter_best_article(substitutes) if substitutes else None
     searched_article = None
-    articles = None
     content_title = _("This article not exist.")
     masthead_content = searching
-    image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZHMq" \
-                "twBvkuRWej2Up8zYxgFx-"
+    image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP8Afx0GJ_ZY2djs-fT3zfLRIZ" \
+                "HMqtwBvkuRWej2Up8zYxgFx-"
 
-    if searching and results and results.count() > 0:
-        searched_article = results[0]
+    if searching and substitutes and substitutes.count() > 0:
+        searched_article = substitutes[0]
         masthead_content = searched_article.product_name
         image_url = searched_article.image_url
         articles = searched_article.get_article_substitutes_from_bd(category, nutriscore)
         if not articles:
-            articles = results[1:]
+            articles = substitutes[1:]
     else:
-        articles = results
+        articles = substitutes
     # return only the first twelve articles
     if articles:
         content_title = _("You can substitute this product with : ")
         articles = articles[:12]
         articles.sort(key=lambda x: [x.my_grade, x.ingredients_number, x.keywords_number],
                       reverse=True)
-
 
     return {
         'searched_article': searched_article,
@@ -331,6 +340,7 @@ def register_substitut(request):
             return render(request, 'substitute/' + come_from + '.html', context)
     return redirect(log_in)
 
+
 @cust_login_required
 def account(request):
     """
@@ -389,12 +399,9 @@ class CategoryAutocomplete(autocomplete.Select2QuerySetView):
 
     def get_queryset(self):
         """
-        Methoe returning queryset
+        Methode returning queryset
         """
         qs = Category.objects.all()
         if self.q:
             qs = qs.filter(name__istartswith=self.q)
         return qs
-
-    # def get_result_label(self, item):
-    #     return item.name

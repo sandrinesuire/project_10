@@ -1,3 +1,6 @@
+"""
+Command file
+"""
 import logging
 import openfoodfacts
 from django.core.management.base import BaseCommand
@@ -11,9 +14,18 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    """
+    Commands class
+    """
     help = 'Command to update database with openfoodfacts api data'
 
     def handle(self, *args, **options):
+        """
+        Handle command using to update database from openfoodfact
+        :param args:
+        :param options:
+        :return:
+        """
         date_begin = now()
         article_count_before = Article.objects.count()
         try:
@@ -41,8 +53,8 @@ def register_api_data_db(categories_nb=25, product_number_by_category=10, max_pa
         name = category.get('name', None)
         if name:
             category = Category.objects.get_or_create(name=name)[0]
-            # some articles are not available, so count to force min 60 product available by category
-            # but break after 14 pages
+            # some articles are not available, so count to force min 60 product available by
+            # category but break after 14 pages
             page, count_product = 1, 0
             while page < max_page_by_category:
                 products = openfoodfacts.products.get_by_category(name, page=page)

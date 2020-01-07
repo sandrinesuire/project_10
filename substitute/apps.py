@@ -1,8 +1,6 @@
 """
 Apps
 """
-
-
 from django.apps import AppConfig
 
 

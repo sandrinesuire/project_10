@@ -72,7 +72,9 @@ class SearchingPageTestCase(TestCase):
         user = User.objects.create_user(username, email, password)
         Profile.objects.create(user=user)
         data = {
-            'csrfmiddlewaretoken': ['kml1mLBvkNpg8j5uWFEqlh23v3ciBM8OStaxnJZe6QV9gsFeTLS7gOZ8g4XWraAQ'],
+            'csrfmiddlewaretoken': [
+                'kml1mLBvkNpg8j5uWFEqlh23v3ciBM8OStaxnJZe6QV9gsFeTLS7gOZ8g4XWraAQ'
+            ],
             'username': username,
             'password': password,
         }
@@ -92,7 +94,8 @@ class SearchingPageTestCase(TestCase):
 
         response = self.client.post(reverse('mysubstitutes'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context[0].dicts[3]['content_title'], 'Voici la liste de vos substituts :')
+        self.assertEqual(response.context[0].dicts[3]['content_title'],
+                         'Voici la liste de vos substituts :')
 
     def test_detail(self):
         """
@@ -118,7 +121,9 @@ class SearchingPageTestCase(TestCase):
         username = "username"
         email = "email@email.com"
         password = "password"
-        data = {'csrfmiddlewaretoken': ['kml1mLBvkNpg8j5uWFEqlh23v3ciBM8OStaxnJZe6QV9gsFeTLS7gOZ8g4XWraAQ'],
+        data = {'csrfmiddlewaretoken': [
+            'kml1mLBvkNpg8j5uWFEqlh23v3ciBM8OStaxnJZe6QV9gsFeTLS7gOZ8g4XWraAQ'
+        ],
                 'username': username,
                 'email': email,
                 'password': password,
@@ -144,7 +149,9 @@ class SearchingPageTestCase(TestCase):
         user = User.objects.create_user(username, email, password)
         Profile.objects.create(user=user)
         data = {
-            'csrfmiddlewaretoken': ['kml1mLBvkNpg8j5uWFEqlh23v3ciBM8OStaxnJZe6QV9gsFeTLS7gOZ8g4XWraAQ'],
+            'csrfmiddlewaretoken': [
+                'kml1mLBvkNpg8j5uWFEqlh23v3ciBM8OStaxnJZe6QV9gsFeTLS7gOZ8g4XWraAQ'
+            ],
             'username': username,
             'password': password,
         }
@@ -188,13 +195,15 @@ class SearchingPageTestCase(TestCase):
         self.assertEqual(response.context[0].dicts[3]['form_search'].data, data)
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
-        # search with not valid form_search, key of data not existing in form_search model: request return form_search data
+        # search with not valid form_search, key of data not existing in form_search model:
+        # request return form_search data
         data = {
             'searchinng': "la tête à toto"
         }
         response = self.client.post(reverse('search'), data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(data['searchinng'], response.context[0].dicts[3]['form_search'].data["searchinng"])
+        self.assertIn(data['searchinng'], response.context[0].dicts[3]['form_search'].data[
+            "searchinng"])
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
         # test post search with empty searching value : request return empty form_search data
@@ -203,7 +212,8 @@ class SearchingPageTestCase(TestCase):
         }
         response = self.client.post(reverse('search'), data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(data['searching'], response.context[0].dicts[3]['form_search'].data["searching"])
+        self.assertIn(data['searching'], response.context[0].dicts[3]['form_search'].data[
+            "searching"])
         self.assertIsNone(response.context[0].dicts[3].get("searched_article"))
 
         # search not existing article

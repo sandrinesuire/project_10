@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.postgres.fields import JSONField
-from openfoodfacts import openfoodfacts
-from . import utils
 
 
 class Profile(models.Model):
@@ -158,51 +156,19 @@ class Article(models.Model):
 
     def get_article_substitutes_from_bd(self, category, nutriscore):
         """
-        Method returning a list of articles could substitute the self searched_article from data_base
+        Method returning a list of articles could substitute the self searched_article from
+        data_base
         :param category: search category
         :param nutriscore: search nutriscore
         :return: list of Article object
         """
         category = self.categories.all()[0] if not category else category
-        substitutes = category.articles.all().filter(nutrition_grades=nutriscore) if nutriscore else \
-            category.articles.all()
+        substitutes = category.articles.all().filter(nutrition_grades=nutriscore) if \
+            nutriscore else category.articles.all()
         substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes)
 
         return substitutes
 
-    # def get_substitute_from_api(self):
-    #     """
-    #     Method returning the best substitutes Article object for searched_article_id from api
-    #     :return: Article object
-    #     """
-    #     category = self.categories[0]
-    #
-    #     search_terms = ' '.join(self.product_name.split(' ')[:1])
-    #
-    #     # first search in biologic agriculture
-    #     substitutes = get_api_article_substitutes(category, search_terms, bio=True)
-    #     substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes)
-    #
-    #     if substitutes:
-    #         return substitutes[0]
-    #     else:
-    #         substitutes = get_api_article_substitutes(category, search_terms)
-    #         substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes)
-    #
-    #         if substitutes:
-    #             return substitutes[0]
-    #         else:
-    #             search_terms = ' '.join(self.product_name.split(' ')[:2])
-    #
-    #             substitutes1 = get_api_article_substitutes(category, search_terms)
-    #             substitutes = Article.filter_substitutes_by_keyword_and_ingredients(self, substitutes1)
-    #             if substitutes:
-    #                 return substitutes[0]
-    #             elif substitutes1:
-    #                 return substitutes1[0]
-    #             else:
-    #                 return None
-    #
     @staticmethod
     def filter_substitutes_by_keyword_and_ingredients(searched_article, substitutes):
         """
@@ -232,13 +198,14 @@ class Article(models.Model):
                 substitute.nutrition_grades) else 0
 
             # count same ingredients
-            # try is necessary because product are not always composed with text info and rank info in ingredients field
+            # try is necessary because product are not always composed with text info and
+            # rank info in ingredients field
             try:
                 ingredients_number = sum(1 for x in
-                                         [v.lower() for d in searched_article.ingredients for (k, v) in d.items() if
-                                          k == "text"] if
-                                         x in [v.lower() for d in substitute.ingredients for (k, v) in d.items() if
-                                               k == "text"])
+                                         [v.lower() for d in searched_article.ingredients for (k, v)
+                                          in d.items() if k == "text"] if
+                                         x in [v.lower() for d in substitute.ingredients for (k, v)
+                                               in d.items() if k == "text"])
             except KeyError:
                 ingredients_number = 0
             substitute.ingredients_number = ingredients_number
@@ -246,8 +213,9 @@ class Article(models.Model):
             if substitute.ingredients_number == 0 or substitute.keywords_number <= 3:
                 substitute.delete = "delete"
 
-        # impossible to delete an instance when the iterator works on it without breaking the loop and skipping
-        # instances, it is why I write the delete key for copy in an other array, only the necessary instances
+        # impossible to delete an instance when the iterator works on it without breaking the loop
+        # and skipping instances, it is why I write the delete key for copy in an other array,
+        # only the necessary instances
         new_substitutes = []
         for substitute in substitutes:
             if not substitute.delete:
@@ -255,8 +223,8 @@ class Article(models.Model):
 
         # sort the list of substitutes by ingredients_number, keywords_number, my_grade
         if new_substitutes:
-            new_substitutes.sort(key=lambda x: [x.ingredients_number, x.keywords_number, x.my_grade],
-                                 reverse=True)
+            new_substitutes.sort(
+                key=lambda x: [x.ingredients_number, x.keywords_number, x.my_grade], reverse=True)
             return new_substitutes
         return None
 
@@ -302,7 +270,8 @@ class Article(models.Model):
         """
         Method filtering the results by the mosted call category
         """
-        best_cat = max(set([a.categories.all()[0].id for a in results]), key=[a.categories.all()[0].id for a in results].count)
+        best_cat = max(set([a.categories.all()[0].id for a in results]),
+                       key=[a.categories.all()[0].id for a in results].count)
         results = results.filter(categories__id=best_cat)
         return results
 
@@ -323,49 +292,3 @@ class ProfileSubstitute(models.Model):
         related_name='substitutes',
         help_text=_("the relation with Article model")
     )
-
-
-def get_api_article_substitutes(category_api='', search_terms='', bio=None):
-    """
-    Method returning list of Article substitutes from api
-    :param category_api:
-    :param search_terms:
-    :param bio:
-    :return: list of Article objects
-    """
-    if bio:
-        products = openfoodfacts.products.advanced_search({
-            "search_terms": search_terms,
-            "tagtype_0": "countries",
-            "tag_contains_0": "contains",
-            "tag_0": "france",
-            "tagtype_1": "categories",
-            "tag_contains_1": "contains",
-            "tag_1": category_api,
-            "tagtype_2": "labels",
-            "tag_contains_2": "contains",
-            "tag_2": "fr:ab-agriculture-biologique",
-            "additives": "without",
-            "ingredients_from_palm_oil": "without",
-            "sort_by": "unique_scans",
-            "page_size": 100
-        })['products']
-    else:
-        products = openfoodfacts.products.advanced_search({
-            "search_terms": search_terms,
-            "tagtype_0": "countries",
-            "tag_contains_0": "contains",
-            "tag_0": "france",
-            "tagtype_1": "categories",
-            "tag_contains_1": "contains",
-            "tag_1": category_api,
-            "additives": "without",
-            "ingredients_from_palm_oil": "without",
-            "sort_by": "unique_scans",
-            "page_size": 100
-        })['products']
-    articles = []
-    for product in products:
-        article = Article.register_from_product(product)
-        articles.append(article)
-    return articles
