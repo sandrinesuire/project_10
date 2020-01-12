@@ -38,29 +38,32 @@ class SearchForm(forms.Form):
     Search substitute form
     """
     category = forms.ModelChoiceField(
-        label=_("Categorie"),
+        label="",
         queryset=Category.objects.all(),
         required=False,
         widget=autocomplete.ModelSelect2(
             url='category-autocomplete',
-            attrs={'onchange': 'search_form.submit();'}
+            attrs={
+                'data-placeholder': _('Categorie'),
+                'onchange': 'search_form.submit();'}
         )
     )
     nutriscore = forms.ChoiceField(
         choices=NUTRI_CHOICES,
-        label=_("Nutriscore"),
+        label="",
         required=False,
         widget=forms.Select(
             attrs={
+                'placeholder': _('Nutriscore'),
                 'style': 'width:100%', 'class': 'form-group', 'onchange': 'search_form.submit();'
             }
         )
     )
     searching = forms.CharField(
-        label=_("search a substitute"),
+        label="",
         max_length=100,
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': _('search'),
+        widget=forms.TextInput(attrs={'placeholder': _('search a substitute'),
                                       'title': _("search a substitute")})
     )
 
