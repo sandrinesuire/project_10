@@ -38,7 +38,7 @@ class SearchForm(forms.Form):
     Search substitute form
     """
     category = forms.ModelChoiceField(
-        label="",
+        label=" ",
         queryset=Category.objects.all(),
         required=False,
         widget=autocomplete.ModelSelect2(
@@ -50,7 +50,7 @@ class SearchForm(forms.Form):
     )
     nutriscore = forms.ChoiceField(
         choices=NUTRI_CHOICES,
-        label="",
+        label=" ",
         required=False,
         widget=forms.Select(
             attrs={
@@ -60,7 +60,7 @@ class SearchForm(forms.Form):
         )
     )
     searching = forms.CharField(
-        label="",
+        label=" ",
         max_length=100,
         required=False,
         widget=forms.TextInput(attrs={'placeholder': _('search a substitute'),
