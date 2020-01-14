@@ -25,6 +25,7 @@ class LoginForm(forms.Form):
 
 
 NUTRI_CHOICES = (
+    (None, "nutriscore"),
     ("a", "A"),
     ("b", "B"),
     ("c", "C"),
@@ -56,7 +57,7 @@ class SearchForm(forms.Form):
         widget=forms.Select(
             attrs={
                 'placeholder': _('Nutriscore'),
-                'style': 'width:100%', 'class': 'form-group mt-4', 'onchange': 'search_form.submit();'
+                'class': 'form-group mt-4 combo', 'onchange': 'search_form.submit();'
             }
         )
     )
@@ -64,7 +65,7 @@ class SearchForm(forms.Form):
         label="",
         max_length=100,
         required=False,
-        widget=forms.TextInput(attrs={'class': 'mt-4', 'placeholder': _('search a substitute'),
+        widget=forms.TextInput(attrs={'class': 'mt-4 combo', 'placeholder': _('search a substitute'),
                                       'title': _("search a substitute")})
     )
 
